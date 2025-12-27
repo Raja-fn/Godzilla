@@ -1,0 +1,362 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section mb-5">
+  <div class="container-fluid px-4">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold mb-3" style="color: #1a202c;">Your Health, Simplified</h1>
+        <p class="lead text-muted mb-4">
+          Track your workouts, meals, and progress with our intuitive dashboard. Stay motivated and reach your fitness goals faster.
+        </p>
+        <div class="d-flex gap-3">
+          <a href="/log" class="btn btn-lg" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; color: white; border-radius: 12px; padding: 12px 32px;">
+            Book a Demo
+          </a>
+          <a href="/log" class="btn btn-lg btn-outline-primary" style="border-radius: 12px; padding: 12px 32px;">
+            Contact Sales
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-6 text-end">
+        <div class="hero-icons">
+          <i class="fas fa-dumbbell" style="font-size: 3rem; color: #fbbf24; margin: 10px;"></i>
+          <i class="fas fa-running" style="font-size: 2.5rem; color: #3b82f6; margin: 10px;"></i>
+          <i class="fas fa-bowl-food" style="font-size: 2.8rem; color: #8b5cf6; margin: 10px;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Personalized Daily Summary -->
+<section class="daily-summary mb-4">
+  <div class="container-fluid px-4">
+    <div class="row">
+      <div class="col-lg-8 mb-4">
+        <div class="card p-4" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+          <div class="d-flex align-items-center mb-4">
+            <i class="fas fa-sun me-3" style="font-size: 2rem; color: #fbbf24;"></i>
+            <div>
+              <h3 class="mb-0">Good Morning</h3>
+              <p class="text-muted mb-0">Cecilia Park</p>
+            </div>
+          </div>
+          
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <div class="metric-card p-3" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px;">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <p class="text-muted mb-1 small">Weight</p>
+                    <h4 class="mb-0 fw-bold">80.2 kg</h4>
+                  </div>
+                  <i class="fas fa-weight" style="font-size: 1.5rem; color: #10b981;"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="metric-card p-3" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px;">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <p class="text-muted mb-1 small">Calories</p>
+                    <h4 class="mb-0 fw-bold">4901 kcal</h4>
+                  </div>
+                  <i class="fas fa-fire" style="font-size: 1.5rem; color: #3b82f6;"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="metric-card p-3" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px;">
+                <div>
+                  <p class="text-muted mb-2 small">Steps</p>
+                  <div class="progress" style="height: 8px; border-radius: 10px; background: #f3f4f6;">
+                    <div class="progress-bar" style="background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%); width: 65%;"></div>
+                  </div>
+                  <p class="mb-0 mt-2 small fw-bold">6,500 / 10,000</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <h6 class="fw-bold mb-3">To schedule</h6>
+              <ul class="list-unstyled">
+                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Morning workout</li>
+                <li class="mb-2"><i class="fas fa-circle text-muted me-2" style="font-size: 0.5rem;"></i>Meal prep</li>
+                <li class="mb-2"><i class="fas fa-circle text-muted me-2" style="font-size: 0.5rem;"></i>Evening run</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h6 class="fw-bold mb-3">Body Analysis</h6>
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1 me-3">
+                  <div class="d-flex justify-content-between mb-1">
+                    <span class="small">Muscle Mass</span>
+                    <span class="small fw-bold">75%</span>
+                  </div>
+                  <div class="progress" style="height: 6px; border-radius: 10px;">
+                    <div class="progress-bar bg-success" style="width: 75%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule Timeline -->
+      <div class="col-lg-4">
+        <div class="card p-4" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+          <h5 class="fw-bold mb-4">Today's Schedule</h5>
+          <div class="schedule-timeline">
+            <div class="timeline-item mb-3">
+              <div class="d-flex align-items-center">
+                <div class="time-badge me-3" style="min-width: 60px;">
+                  <span class="small text-muted">11 pm</span>
+                </div>
+                <div class="flex-grow-1">
+                  <span class="badge bg-light text-dark px-3 py-2" style="border-radius: 8px;">Meal prep</span>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-item mb-3">
+              <div class="d-flex align-items-center">
+                <div class="time-badge me-3" style="min-width: 60px;">
+                  <span class="small text-muted">12 am</span>
+                </div>
+                <div class="flex-grow-1">
+                  <span class="badge bg-light text-dark px-3 py-2" style="border-radius: 8px;">Rest</span>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-item mb-3">
+              <div class="d-flex align-items-center">
+                <div class="time-badge me-3" style="min-width: 60px;">
+                  <span class="small text-muted">1 am</span>
+                </div>
+                <div class="flex-grow-1">
+                  <button class="btn btn-primary btn-sm w-100" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; border-radius: 8px;">
+                    Clean the house!
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="d-flex align-items-center">
+                <div class="time-badge me-3" style="min-width: 60px;">
+                  <span class="small text-muted">2 am</span>
+                </div>
+                <div class="flex-grow-1">
+                  <span class="badge bg-danger px-3 py-2" style="border-radius: 8px;">Pre-workout</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KPI Cards -->
+<section class="kpi-section mb-4">
+  <div class="container-fluid px-4">
+    <div class="row g-3">
+      <div class="col-md-3">
+        <div class="card p-4 text-center" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
+          <i class="fas fa-clipboard-list mb-3" style="font-size: 2rem; color: #10b981;"></i>
+          <h6 class="text-muted mb-2">Logs</h6>
+          <h2 class="fw-bold mb-0">{{ total_logs }}</h2>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card p-4 text-center" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);">
+          <i class="fas fa-check-circle mb-3" style="font-size: 2rem; color: #3b82f6;"></i>
+          <h6 class="text-muted mb-2">Workouts Done</h6>
+          <h2 class="fw-bold mb-0">{{ total_logs - missed }}</h2>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card p-4 text-center" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);">
+          <i class="fas fa-times-circle mb-3" style="font-size: 2rem; color: #ef4444;"></i>
+          <h6 class="text-muted mb-2">Missed</h6>
+          <h2 class="fw-bold mb-0">{{ missed }}</h2>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card p-4 text-center" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
+          <i class="fas fa-bed mb-3" style="font-size: 2rem; color: #f59e0b;"></i>
+          <h6 class="text-muted mb-2">Avg Sleep</h6>
+          <h2 class="fw-bold mb-0">{{ avg_sleep | round(1) if avg_sleep else '-' }}<small class="fs-6">h</small></h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Charts and Activity -->
+<section class="charts-section mb-4">
+  <div class="container-fluid px-4">
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="card p-4" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+          <h5 class="fw-bold mb-4">Recent Activity</h5>
+          {% if logs %}
+            <div class="activity-list">
+              {% for l in logs[:6] %}
+                <div class="activity-item d-flex align-items-center mb-3 p-3" style="background: #f9fafb; border-radius: 12px;">
+                  <div class="activity-icon me-3">
+                    {% if l.missed_workout %}
+                      <i class="fas fa-exclamation-circle text-danger" style="font-size: 1.5rem;"></i>
+                    {% else %}
+                      <i class="fas fa-check-circle text-success" style="font-size: 1.5rem;"></i>
+                    {% endif %}
+                  </div>
+                  <div class="flex-grow-1">
+                    <strong>{{ l.date }}</strong>
+                    <p class="mb-0 text-muted small">
+                      Stress: <em>{{ l.stress_level }}</em> • Sleep: <strong>{{ l.sleep_hours }}h</strong> • Energy: {{ l.energy_level }}
+                      {% if l.missed_workout %}<span class="badge bg-danger ms-2">Missed</span>{% endif %}
+                    </p>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="text-muted">No activity yet. <a href="/log">Add a log</a> to get started.</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card p-4 decision-card" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+          <h5 class="text-white fw-bold mb-4">Latest Decision</h5>
+          {% if decisions %}
+            {% set d = decisions[0] %}
+            <div class="decision-body">
+              <div class="mb-3">
+                <span class="badge bg-light text-primary me-2 mb-2">Goal: <strong>{{ d.goal_status }}</strong></span>
+                <span class="badge bg-light text-primary mb-2">Wellness: <strong>{{ d.wellness_state }}</strong></span>
+              </div>
+              <div>
+                <h6 class="text-white mb-2">Plan</h6>
+                <ul class="list-unstyled plan-list">
+                  {% for step in d.final_plan %}
+                    <li class="plan-item mb-2">
+                      <i class="fas fa-circle me-2" style="font-size: 0.5rem;"></i>
+                      <span>{{ step }}</span>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+              <small class="text-white-50">{{ d.date }}</small>
+            </div>
+          {% else %}
+            <p class="text-white-50">No decisions yet. Run the agent from <a href="/log" class="text-white">Log Today</a>.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Charts Row -->
+<section class="charts-row mb-4">
+  <div class="container-fluid px-4">
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card p-4" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+          <h5 class="fw-bold mb-4">Sleep Over Time</h5>
+          <canvas id="sleepChart" height="100"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="card p-4" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+          <h5 class="fw-bold mb-4">Stress Distribution</h5>
+          <canvas id="stressChart" height="100"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="card p-4" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+          <h5 class="fw-bold mb-4">Energy Distribution</h5>
+          <canvas id="energyChart" height="100"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const sleepLabels = {{ sleep_labels | tojson }};
+  const sleepSeries = {{ sleep_series | tojson }};
+  const stressCounts = {{ stress_counts | tojson }};
+  const energyCounts = {{ energy_counts | tojson }};
+
+  // Sleep line chart
+  const ctxSleep = document.getElementById('sleepChart').getContext('2d');
+  new Chart(ctxSleep, {
+    type: 'line',
+    data: { 
+      labels: sleepLabels, 
+      datasets: [{ 
+        label: 'Sleep (hrs)', 
+        data: sleepSeries, 
+        borderColor: '#3b82f6', 
+        backgroundColor: 'rgba(59, 130, 246, 0.1)', 
+        fill: true,
+        tension: 0.4,
+        borderWidth: 3
+      }] 
+    },
+    options: { 
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  // Stress pie
+  const ctxStress = document.getElementById('stressChart').getContext('2d');
+  new Chart(ctxStress, {
+    type: 'doughnut',
+    data: { 
+      labels: Object.keys(stressCounts), 
+      datasets: [{ 
+        data: Object.values(stressCounts), 
+        backgroundColor: ['#ef4444','#f59e0b','#10b981'] 
+      }] 
+    },
+    options: { 
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+
+  // Energy pie
+  const ctxEnergy = document.getElementById('energyChart').getContext('2d');
+  new Chart(ctxEnergy, {
+    type: 'doughnut',
+    data: { 
+      labels: Object.keys(energyCounts), 
+      datasets: [{ 
+        data: Object.values(energyCounts), 
+        backgroundColor: ['#8b5cf6','#3b82f6','#fbbf24'] 
+      }] 
+    },
+    options: { 
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+</script>
+
+{% endblock %}

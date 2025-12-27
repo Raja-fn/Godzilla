@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Adaptive Fitness — SPA</h1>
+<div id="app" class="card p-3">
+  <p>Loading...</p>
+</div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script>
+const e = React.createElement;
+function App(){
+  const [logs, setLogs] = React.useState([]);
+  const [decisions, setDecisions] = React.useState([]);
+  React.useEffect(()=>{fetch('/api/logs').then(r=>r.json()).then(setLogs); fetch('/api/decisions').then(r=>r.json()).then(setDecisions)},[]);
+  return e('div', null,
+    e('h4', null, 'Recent logs (SPA)'),
+    e('pre', null, JSON.stringify(logs.slice(0,5), null, 2)),
+    e('h4', null, 'Recent decisions'),
+    e('pre', null, JSON.stringify(decisions.slice(0,5), null, 2))
+  )
+}
+ReactDOM.createRoot(document.getElementById('app')).render(e(App));
+</script>
+{% endblock %}

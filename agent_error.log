@@ -1,0 +1,4 @@
+# agent_error.log
+# This file will collect tracebacks when the agent run fails.
+# Created: 2025-12-25
+

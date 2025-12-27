@@ -1,0 +1,82 @@
+{
+  "daily_logs": [
+    {
+      "user_id": "11111111-1111-1111-1111-111111111111",
+      "date": "2025-12-25",
+      "missed_workout": false,
+      "stress_level": "medium",
+      "sleep_hours": 7,
+      "energy_level": "medium"
+    },
+    {
+      "user_id": "11111111-1111-1111-1111-111111111111",
+      "date": "2025-12-25",
+      "missed_workout": false,
+      "stress_level": "medium",
+      "sleep_hours": 7,
+      "energy_level": "medium"
+    },
+    {
+      "user_id": "11111111-1111-1111-1111-111111111111",
+      "date": "2025-12-25",
+      "missed_workout": true,
+      "stress_level": "high",
+      "sleep_hours": 4,
+      "energy_level": "low"
+    },
+    {
+      "user_id": "11111111-1111-1111-1111-111111111111",
+      "date": "2025-12-27",
+      "missed_workout": true,
+      "stress_level": "low",
+      "sleep_hours": 2,
+      "energy_level": "high"
+    }
+  ],
+  "agent_decisions": [
+    {
+      "user_id": "11111111-1111-1111-1111-111111111111",
+      "date": "2025-12-25",
+      "goal_status": "on_track",
+      "wellness_state": "normal",
+      "final_plan": [
+        "20 min cardio",
+        "bodyweight workout"
+      ]
+    },
+    {
+      "user_id": "11111111-1111-1111-1111-111111111111",
+      "date": "2025-12-25",
+      "goal_status": "on_track",
+      "wellness_state": "normal",
+      "final_plan": [
+        "20 min cardio",
+        "bodyweight workout"
+      ]
+    },
+    {
+      "user_id": "11111111-1111-1111-1111-111111111111",
+      "date": "2025-12-25",
+      "goal_status": "on_track",
+      "wellness_state": "recovery",
+      "final_plan": [
+        "breathing",
+        "light walk"
+      ]
+    },
+    {
+      "user_id": "11111111-1111-1111-1111-111111111111",
+      "date": "2025-12-27",
+      "goal_status": "on_track",
+      "wellness_state": "recovery",
+      "final_plan": [
+        "breathing",
+        "light walk"
+      ]
+    }
+  ],
+  "settings": {
+    "user_id": "11111111-1111-1111-1111-111111111111",
+    "use_supabase": false
+  }
+}

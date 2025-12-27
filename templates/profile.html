@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Profile</h1>
+<p>Basic user profile — editable in settings.</p>
+<div class="card p-3">
+  <p><strong>User ID:</strong> {{ request.args.get('user_id', 'n/a') }}</p>
+  <p><strong>Joined:</strong> 2025-01-01</p>
+</div>
+{% endblock %}
