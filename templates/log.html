@@ -1,31 +1,345 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Log Today's Status</h1>
-<form method="post">
-  <div class="mb-3">
-    <label class="form-label">Stress Level</label>
-    <select name="stress" class="form-select">
-      <option value="low">Low</option>
-      <option value="medium" selected>Medium</option>
-      <option value="high">High</option>
-    </select>
+<div class="check-in-page">
+  <div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="check-in-header">
+          <h1 class="fw-bold mb-2" style="color: #1a202c;">
+            <i class="fas fa-clipboard-check me-2" style="color: #667eea;"></i>Daily Check-in
+          </h1>
+          <p class="text-muted mb-0">Track your daily progress and wellness metrics</p>
+        </div>
+      </div>
+    </div>
+
+    <form method="post" id="checkInForm">
+      <div class="row g-4">
+        <!-- Left Column - Wellness Metrics -->
+        <div class="col-lg-6">
+          <div class="card p-4 mb-4" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+            <h5 class="fw-bold mb-4">
+              <i class="fas fa-heartbeat me-2" style="color: #ef4444;"></i>Wellness Metrics
+            </h5>
+            
+            <!-- Stress Level -->
+            <div class="mb-4">
+              <label class="form-label fw-bold mb-3">Stress Level</label>
+              <div class="btn-group w-100 stress-selector" role="group">
+                <input type="radio" class="btn-check" name="stress" id="stress_low" value="low">
+                <label class="btn btn-outline-success" for="stress_low">
+                  <i class="fas fa-smile me-2"></i>Low
+                </label>
+                
+                <input type="radio" class="btn-check" name="stress" id="stress_medium" value="medium" checked>
+                <label class="btn btn-outline-warning" for="stress_medium">
+                  <i class="fas fa-meh me-2"></i>Medium
+                </label>
+                
+                <input type="radio" class="btn-check" name="stress" id="stress_high" value="high">
+                <label class="btn btn-outline-danger" for="stress_high">
+                  <i class="fas fa-frown me-2"></i>High
+                </label>
+              </div>
+            </div>
+
+            <!-- Energy Level -->
+            <div class="mb-4">
+              <label class="form-label fw-bold mb-3">Energy Level</label>
+              <div class="btn-group w-100 energy-selector" role="group">
+                <input type="radio" class="btn-check" name="energy" id="energy_low" value="low">
+                <label class="btn btn-outline-secondary" for="energy_low">
+                  <i class="fas fa-battery-quarter me-2"></i>Low
+                </label>
+                
+                <input type="radio" class="btn-check" name="energy" id="energy_medium" value="medium" checked>
+                <label class="btn btn-outline-primary" for="energy_medium">
+                  <i class="fas fa-battery-half me-2"></i>Medium
+                </label>
+                
+                <input type="radio" class="btn-check" name="energy" id="energy_high" value="high">
+                <label class="btn btn-outline-success" for="energy_high">
+                  <i class="fas fa-battery-full me-2"></i>High
+                </label>
+              </div>
+            </div>
+
+            <!-- Mood -->
+            <div class="mb-4">
+              <label class="form-label fw-bold mb-3">How are you feeling today?</label>
+              <select name="mood" class="form-select form-select-lg">
+                <option value="excited">😄 Excited</option>
+                <option value="happy" selected>😊 Happy</option>
+                <option value="calm">😌 Calm</option>
+                <option value="neutral">😐 Neutral</option>
+                <option value="tired">😴 Tired</option>
+                <option value="stressed">😰 Stressed</option>
+                <option value="sad">😢 Sad</option>
+              </select>
+            </div>
+
+            <!-- Sleep Hours -->
+            <div class="mb-4">
+              <label class="form-label fw-bold mb-3">
+                <i class="fas fa-bed me-2" style="color: #3b82f6;"></i>Sleep Hours
+              </label>
+              <div class="d-flex align-items-center">
+                <input type="range" class="form-range flex-grow-1 me-3" name="sleep_hours" id="sleepSlider" 
+                       min="0" max="12" value="7" step="0.5" oninput="updateSleepValue(this.value)">
+                <div class="sleep-display text-center" style="min-width: 80px;">
+                  <span class="h4 mb-0 fw-bold" id="sleepValue" style="color: #3b82f6;">7</span>
+                  <small class="d-block text-muted">hours</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Water Intake -->
+            <div class="mb-4">
+              <label class="form-label fw-bold mb-3">
+                <i class="fas fa-tint me-2" style="color: #3b82f6;"></i>Water Intake (glasses)
+              </label>
+              <div class="d-flex align-items-center">
+                <input type="range" class="form-range flex-grow-1 me-3" name="water_intake" id="waterSlider" 
+                       min="0" max="15" value="8" step="1" oninput="updateWaterValue(this.value)">
+                <div class="water-display text-center" style="min-width: 60px;">
+                  <span class="h4 mb-0 fw-bold" id="waterValue" style="color: #3b82f6;">8</span>
+                  <small class="d-block text-muted">glasses</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Activity & Physical Metrics -->
+        <div class="col-lg-6">
+          <div class="card p-4 mb-4" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+            <h5 class="fw-bold mb-4">
+              <i class="fas fa-dumbbell me-2" style="color: #10b981;"></i>Activity & Physical Metrics
+            </h5>
+
+            <!-- Workout Status -->
+            <div class="mb-4">
+              <label class="form-label fw-bold mb-3">Workout Status</label>
+              <div class="workout-status-card p-3 mb-3" id="workoutCard" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; border: 2px solid #10b981;">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" name="missed" id="missed" onchange="toggleWorkoutDetails(this)">
+                  <label class="form-check-label fw-bold" for="missed" id="workoutLabel" style="color: #059669;">
+                    Completed today's workout
+                  </label>
+                </div>
+              </div>
+
+              <!-- Workout Details (shown when workout is completed) -->
+              <div id="workoutDetails">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted">Workout Type</label>
+                    <select name="workout_type" class="form-select">
+                      <option value="">Select type</option>
+                      <option value="cardio">Cardio</option>
+                      <option value="strength">Strength Training</option>
+                      <option value="yoga">Yoga/Stretching</option>
+                      <option value="hiit">HIIT</option>
+                      <option value="cycling">Cycling</option>
+                      <option value="running">Running</option>
+                      <option value="swimming">Swimming</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted">Duration (minutes)</label>
+                    <input type="number" name="workout_duration" class="form-control" min="5" max="180" placeholder="e.g. 45">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Steps -->
+            <div class="mb-4">
+              <label class="form-label fw-bold mb-3">
+                <i class="fas fa-walking me-2" style="color: #f59e0b;"></i>Steps Taken
+              </label>
+              <div class="input-group input-group-lg">
+                <input type="number" name="steps" class="form-control" min="0" max="50000" placeholder="e.g. 8500" value="">
+                <span class="input-group-text">steps</span>
+              </div>
+              <small class="text-muted">Leave blank if you don't have a step counter</small>
+            </div>
+
+            <!-- Calories -->
+            <div class="mb-4">
+              <label class="form-label fw-bold mb-3">
+                <i class="fas fa-fire me-2" style="color: #ef4444;"></i>Calories Consumed
+              </label>
+              <div class="input-group input-group-lg">
+                <input type="number" name="calories" class="form-control" min="0" max="5000" placeholder="e.g. 2200" value="">
+                <span class="input-group-text">kcal</span>
+              </div>
+              <small class="text-muted">Optional - track your daily calorie intake</small>
+            </div>
+
+            <!-- Weight -->
+            <div class="mb-4">
+              <label class="form-label fw-bold mb-3">
+                <i class="fas fa-weight me-2" style="color: #8b5cf6;"></i>Weight (kg)
+              </label>
+              <div class="input-group input-group-lg">
+                <input type="number" name="weight" class="form-control" min="0" max="300" step="0.1" placeholder="e.g. 75.5" value="">
+                <span class="input-group-text">kg</span>
+              </div>
+              <small class="text-muted">Optional - track your daily weight</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Section - Notes -->
+        <div class="col-12">
+          <div class="card p-4" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+            <h5 class="fw-bold mb-3">
+              <i class="fas fa-sticky-note me-2" style="color: #667eea;"></i>Notes & Reflection
+            </h5>
+            <textarea name="notes" class="form-control" rows="4" placeholder="How did you feel today? Any achievements or challenges? Write your thoughts here..."></textarea>
+            <small class="text-muted">Optional - Journal your thoughts and reflections</small>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="col-12">
+          <div class="d-flex justify-content-between align-items-center">
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg px-4">
+              <i class="fas fa-arrow-left me-2"></i>Cancel
+            </a>
+            <button type="submit" class="btn btn-primary btn-lg px-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+              <i class="fas fa-check-circle me-2"></i>Submit Check-in & Run Agent
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
-  <div class="mb-3">
-    <label class="form-label">Sleep Hours</label>
-    <input type="number" name="sleep_hours" class="form-control" value="7" min="0" max="24">
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Energy Level</label>
-    <select name="energy" class="form-select">
-      <option value="low">Low</option>
-      <option value="medium" selected>Medium</option>
-      <option value="high">High</option>
-    </select>
-  </div>
-  <div class="form-check mb-3">
-    <input class="form-check-input" type="checkbox" name="missed" id="missed">
-    <label class="form-check-label" for="missed">Missed today's workout</label>
-  </div>
-  <button class="btn btn-primary">Submit & Run Agent</button>
-</form>
+</div>
+
+<script>
+function updateSleepValue(value) {
+  document.getElementById('sleepValue').textContent = value;
+}
+
+function updateWaterValue(value) {
+  document.getElementById('waterValue').textContent = value;
+}
+
+function toggleWorkoutDetails(checkbox) {
+  const details = document.getElementById('workoutDetails');
+  const label = document.getElementById('workoutLabel');
+  const card = document.getElementById('workoutCard');
+  
+  if (!checkbox.checked) {
+    // Workout completed (checkbox unchecked = workout done, so missed=False)
+    details.style.display = 'block';
+    label.textContent = 'Completed today\'s workout';
+    label.style.color = '#059669';
+    card.style.background = 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)';
+    card.style.borderColor = '#10b981';
+  } else {
+    // Workout missed (checkbox checked = workout missed, so missed=True)
+    details.style.display = 'none';
+    label.textContent = 'Missed today\'s workout';
+    label.style.color = '#dc2626';
+    card.style.background = 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)';
+    card.style.borderColor = '#ef4444';
+    // Clear workout details when missed
+    const workoutType = details.querySelector('select[name="workout_type"]');
+    const workoutDuration = details.querySelector('input[name="workout_duration"]');
+    if (workoutType) workoutType.value = '';
+    if (workoutDuration) workoutDuration.value = '';
+  }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  const checkbox = document.getElementById('missed');
+  if (checkbox) {
+    toggleWorkoutDetails(checkbox);
+  }
+});
+
+// Form validation
+document.getElementById('checkInForm').addEventListener('submit', function(e) {
+  // Basic validation can be added here if needed
+});
+</script>
+
+<style>
+.check-in-page {
+  padding: 2rem 0;
+}
+
+.check-in-header {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.stress-selector .btn-check:checked + .btn-outline-success {
+  background-color: #10b981;
+  border-color: #10b981;
+  color: white;
+}
+
+.stress-selector .btn-check:checked + .btn-outline-warning {
+  background-color: #f59e0b;
+  border-color: #f59e0b;
+  color: white;
+}
+
+.stress-selector .btn-check:checked + .btn-outline-danger {
+  background-color: #ef4444;
+  border-color: #ef4444;
+  color: white;
+}
+
+.energy-selector .btn-check:checked + .btn-outline-secondary {
+  background-color: #6b7280;
+  border-color: #6b7280;
+  color: white;
+}
+
+.energy-selector .btn-check:checked + .btn-outline-primary {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+.energy-selector .btn-check:checked + .btn-outline-success {
+  background-color: #10b981;
+  border-color: #10b981;
+  color: white;
+}
+
+.form-range::-webkit-slider-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+.form-range::-moz-range-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+.workout-status-card input[type="checkbox"]:checked {
+  background-color: #10b981;
+  border-color: #10b981;
+}
+
+.card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0,0,0,0.12) !important;
+}
+</style>
 {% endblock %}

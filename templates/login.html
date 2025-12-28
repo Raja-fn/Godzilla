@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login - Adaptive Fitness</title>
+    <title>Login - Alivea</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ static_version }}">
     <style>
@@ -128,12 +128,57 @@
         border-color: #667eea;
         background: #f7fafc;
       }
+      .login-card {
+        animation: slideUp 0.6s ease-out;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .btn-google {
+        background: white;
+        border: 2px solid #e2e8f0;
+        color: #4285f4;
+        font-weight: 600;
+        transition: all 0.3s;
+      }
+      .btn-google:hover {
+        border-color: #4285f4;
+        box-shadow: 0 4px 12px rgba(66, 133, 244, 0.2);
+        transform: translateY(-2px);
+        color: #4285f4;
+      }
+      .form-control, .form-select {
+        animation: fadeIn 0.8s ease-out;
+        animation-fill-mode: both;
+      }
+      .form-control:nth-child(1) { animation-delay: 0.1s; }
+      .form-control:nth-child(2) { animation-delay: 0.2s; }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateX(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
     </style>
   </head>
   <body>
     <div class="login-container">
       <div class="login-card">
-        <h1 class="login-logo">AKTIVATE</h1>
+        <div class="text-center mb-4">
+          <img src="{{ url_for('static', filename='logo.svg') }}" alt="Alivea Logo" style="height: 80px; width: 80px; margin-bottom: 1rem;">
+          <h1 class="login-logo">Alivea</h1>
+        </div>
         <p class="login-subtitle">Your Health, Simplified</p>
         
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -166,26 +211,22 @@
         <div class="divider">or</div>
 
         <div class="social-buttons mb-3">
-          <button type="button" class="btn btn-social">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <a href="/auth/google" class="btn btn-google w-100 d-flex align-items-center justify-content-center" style="border-radius: 10px; padding: 0.75rem; text-decoration: none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="me-2">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
             </svg>
-          </button>
-          <button type="button" class="btn btn-social">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" fill="#181717"/>
-            </svg>
-          </button>
+            Continue with Google
+          </a>
         </div>
 
         <p class="text-center mb-0">
           <a href="#" class="text-decoration-none" style="color: #667eea;">Forgot password?</a>
         </p>
         <p class="text-center mt-3">
-          Don't have an account? <a href="#" class="text-decoration-none" style="color: #667eea; font-weight: 600;">Sign up</a>
+          Don't have an account? <a href="{{ url_for('register') }}" class="text-decoration-none" style="color: #667eea; font-weight: 600;">Sign up</a>
         </p>
       </div>
     </div>

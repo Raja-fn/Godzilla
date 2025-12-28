@@ -1,9 +1,217 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Profile</h1>
-<p>Basic user profile — editable in settings.</p>
-<div class="card p-3">
-  <p><strong>User ID:</strong> {{ request.args.get('user_id', 'n/a') }}</p>
-  <p><strong>Joined:</strong> 2025-01-01</p>
+<div class="profile-page">
+  <div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h1 class="fw-bold mb-2" style="color: #1a202c;">
+              <i class="fas fa-user-circle me-2" style="color: #667eea;"></i>My Profile
+            </h1>
+            <p class="text-muted mb-0">Manage your profile information and settings</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if current_user %}
+    <form method="post" enctype="multipart/form-data">
+      <div class="row g-4">
+        <!-- Left Column - Profile Information -->
+        <div class="col-lg-8">
+          <!-- Profile Photo & Basic Info -->
+          <div class="card p-4 mb-4" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+            <h5 class="fw-bold mb-4"><i class="fas fa-user me-2" style="color: #667eea;"></i>Profile Information</h5>
+            
+            <div class="row align-items-center mb-4">
+              <div class="col-md-3 text-center">
+                <div class="profile-photo-container mb-3">
+                  {% if current_user.profile_photo %}
+                  <img src="data:image/jpeg;base64,{{ current_user.profile_photo }}" alt="Profile Photo" id="photoPreview" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #667eea;">
+                  {% else %}
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto" id="photoPreview" style="width: 150px; height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 3rem; font-weight: bold; border: 4px solid #667eea;">
+                    {{ current_user.name[0].upper() if current_user.name else 'U' }}
+                  </div>
+                  {% endif %}
+                </div>
+                <label for="profile_photo" class="btn btn-sm btn-outline-primary" style="border-radius: 20px;">
+                  <i class="fas fa-camera me-2"></i>Change Photo
+                </label>
+                <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="d-none" onchange="previewPhoto(this)">
+              </div>
+              
+              <div class="col-md-9">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold">Full Name</label>
+                    <input type="text" name="name" class="form-control" value="{{ current_user.name }}" required>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold">Email</label>
+                    <input type="email" class="form-control" value="{{ current_user.email }}" disabled>
+                    <small class="text-muted">Email cannot be changed</small>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold">Age</label>
+                    <input type="number" name="age" class="form-control" value="{{ current_user.age }}" min="13" max="120" required>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold">Age Group</label>
+                    <input type="text" class="form-control" value="{{ current_user.age_group }}" disabled>
+                    <small class="text-muted">Based on your age</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Physical Metrics -->
+          <div class="card p-4 mb-4" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+            <h5 class="fw-bold mb-4"><i class="fas fa-weight me-2" style="color: #10b981;"></i>Physical Metrics</h5>
+            
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Height (cm)</label>
+                <input type="number" name="height" class="form-control" value="{{ current_user.height }}" min="100" max="250" step="0.1" required>
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Weight (kg)</label>
+                <input type="number" name="weight" class="form-control" value="{{ current_user.weight }}" min="30" max="300" step="0.1" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fitness Goals & Activity -->
+          <div class="card p-4 mb-4" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+            <h5 class="fw-bold mb-4"><i class="fas fa-bullseye me-2" style="color: #f59e0b;"></i>Fitness Goals & Activity</h5>
+            
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Activity Level</label>
+                <select name="activity_level" class="form-select" required>
+                  <option value="sedentary" {% if current_user.activity_level == 'sedentary' %}selected{% endif %}>Sedentary (little or no exercise)</option>
+                  <option value="light" {% if current_user.activity_level == 'light' %}selected{% endif %}>Light (exercise 1-3 days/week)</option>
+                  <option value="moderate" {% if current_user.activity_level == 'moderate' %}selected{% endif %}>Moderate (exercise 3-5 days/week)</option>
+                  <option value="active" {% if current_user.activity_level == 'active' %}selected{% endif %}>Active (exercise 6-7 days/week)</option>
+                  <option value="very_active" {% if current_user.activity_level == 'very_active' %}selected{% endif %}>Very Active (intense exercise daily)</option>
+                </select>
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Goal</label>
+                <select name="goal" class="form-select" required>
+                  <option value="lose_weight" {% if current_user.goal == 'lose_weight' %}selected{% endif %}>Lose Weight</option>
+                  <option value="build_muscle" {% if current_user.goal == 'build_muscle' %}selected{% endif %}>Build Muscle</option>
+                  <option value="improve_fitness" {% if current_user.goal == 'improve_fitness' %}selected{% endif %}>Improve Fitness</option>
+                  <option value="maintain" {% if current_user.goal == 'maintain' %}selected{% endif %}>Maintain Current State</option>
+                  <option value="general_health" {% if current_user.goal == 'general_health' %}selected{% endif %}>General Health</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Stats & Settings -->
+        <div class="col-lg-4">
+          <!-- Stats Card -->
+          <div class="card p-4 mb-4" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <h5 class="fw-bold mb-4"><i class="fas fa-chart-bar me-2"></i>Your Stats</h5>
+            
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span style="opacity: 0.9;">Level</span>
+                <span class="fw-bold" style="font-size: 1.25rem;">{{ current_user.level }}</span>
+              </div>
+              <div class="progress" style="height: 8px; background: rgba(255,255,255,0.2); border-radius: 10px;">
+                <div class="progress-bar bg-white" style="width: {{ (current_user.experience_points % 50) / 50 * 100 }}%; border-radius: 10px;"></div>
+              </div>
+              <small style="opacity: 0.8;">{{ current_user.experience_points }} XP</small>
+            </div>
+            
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span style="opacity: 0.9;">Total Check-ins</span>
+                <span class="fw-bold">{{ current_user.total_logs or 0 }}</span>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span style="opacity: 0.9;">Workouts Completed</span>
+                <span class="fw-bold">{{ current_user.workouts_completed or 0 }}</span>
+              </div>
+            </div>
+            
+            <div class="mb-0">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span style="opacity: 0.9;">Member Since</span>
+                <span class="fw-bold">{{ current_user.created_at or 'N/A' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account Settings -->
+          <div class="card p-4 mb-4" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+            <h5 class="fw-bold mb-4"><i class="fas fa-cog me-2" style="color: #667eea;"></i>Account Settings</h5>
+            
+            <div class="mb-3">
+              <label class="form-label fw-bold">Change Password</label>
+              <input type="password" name="new_password" class="form-control" placeholder="Enter new password (min 6 chars)" minlength="6">
+              <small class="text-muted">Leave blank to keep current password</small>
+            </div>
+            
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="use_supabase" disabled checked>
+              <label class="form-check-label" for="use_supabase">
+                Save to Supabase
+              </label>
+              <small class="d-block text-muted">Configured in system settings</small>
+            </div>
+          </div>
+
+          <!-- Save Button -->
+          <button type="submit" class="btn btn-primary btn-lg w-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); border-radius: 12px;">
+            <i class="fas fa-save me-2"></i>Save Changes
+          </button>
+        </div>
+      </div>
+    </form>
+    {% else %}
+    <div class="card p-5 text-center" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+      <i class="fas fa-user-slash mb-3" style="font-size: 4rem; color: #cbd5e1;"></i>
+      <h4 class="fw-bold mb-2">No Profile Found</h4>
+      <p class="text-muted mb-4">Please <a href="{{ url_for('login') }}">login</a> or <a href="{{ url_for('register') }}">register</a> to view your profile.</p>
+    </div>
+    {% endif %}
+  </div>
 </div>
+
+<script>
+function previewPhoto(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const preview = document.getElementById('photoPreview');
+      if (preview.tagName === 'IMG') {
+        preview.src = e.target.result;
+      } else {
+        // Replace div with image
+        const img = document.createElement('img');
+        img.id = 'photoPreview';
+        img.className = 'rounded-circle';
+        img.src = e.target.result;
+        img.style.cssText = 'width: 150px; height: 150px; object-fit: cover; border: 4px solid #667eea;';
+        preview.parentNode.replaceChild(img, preview);
+      }
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
 {% endblock %}

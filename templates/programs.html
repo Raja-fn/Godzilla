@@ -1,28 +1,225 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Programs</h1>
-<p>Choose a program tailored to your goals.</p>
-<div class="row">
-  <div class="col-md-4">
-    <div class="card p-3">
-      <h5>Beginner</h5>
-      <p>Light cardio, mobility, 3x/week.</p>
-      <button class="btn btn-outline-primary">Select</button>
+<div class="programs-page">
+  <div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h1 class="fw-bold mb-2" style="color: #1a202c;">
+              <i class="fas fa-dumbbell me-2" style="color: #667eea;"></i>Fitness Programs
+            </h1>
+            <p class="text-muted mb-0">Choose a program tailored to your fitness goals and level</p>
+          </div>
+          {% if current_user %}
+          <div class="text-end">
+            <div class="small text-muted">Your Level</div>
+            <div class="fw-bold" style="font-size: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+              Level {{ current_user.level }}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="col-md-4">
-    <div class="card p-3">
-      <h5>Strength</h5>
-      <p>Compound lifts, 4x/week.</p>
-      <button class="btn btn-outline-primary">Select</button>
+
+    {% if not current_user %}
+    <div class="alert alert-info mb-4" style="border-radius: 12px; border: none; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);">
+      <i class="fas fa-info-circle me-2"></i>
+      <strong>Get Started:</strong> Please <a href="{{ url_for('register') }}" class="alert-link">register</a> or <a href="{{ url_for('login') }}" class="alert-link">login</a> to get personalized workout recommendations based on your fitness level.
     </div>
-  </div>
-  <div class="col-md-4">
-    <div class="card p-3">
-      <h5>Wellness</h5>
-      <p>Recovery and mobility focus.</p>
-      <button class="btn btn-outline-primary">Select</button>
+    {% endif %}
+
+    <!-- Programs Grid -->
+    <div class="row g-4">
+      <!-- Beginner Program -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card program-card h-100" style="border-radius: 20px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; overflow: hidden;">
+          <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 2rem; text-align: center; color: white;">
+            <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+              <i class="fas fa-seedling" style="font-size: 2.5rem;"></i>
+            </div>
+            <h4 class="fw-bold mb-2">Beginner</h4>
+            <p class="mb-0 small" style="opacity: 0.9;">Perfect for starting your fitness journey</p>
+          </div>
+          <div class="card-body p-4">
+            <div class="mb-3">
+              <span class="badge bg-success mb-2">Level 1-3</span>
+              <span class="badge bg-primary mb-2">3x/week</span>
+              <span class="badge bg-info mb-2">30-40 min</span>
+            </div>
+            <p class="text-muted mb-3">Build foundational strength with light cardio and mobility exercises. Perfect for those new to fitness.</p>
+            <ul class="list-unstyled mb-4">
+              <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Full body warm-up</li>
+              <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Bodyweight exercises</li>
+              <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Light cardio</li>
+              <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Flexibility & stretching</li>
+            </ul>
+            <a href="{{ url_for('program_detail', program_type='beginner') }}" class="btn btn-success w-100" style="border-radius: 12px; padding: 0.75rem;">
+              <i class="fas fa-arrow-right me-2"></i>View Program
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Strength Program -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card program-card h-100" style="border-radius: 20px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; overflow: hidden;">
+          <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 2rem; text-align: center; color: white;">
+            <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+              <i class="fas fa-dumbbell" style="font-size: 2.5rem;"></i>
+            </div>
+            <h4 class="fw-bold mb-2">Strength Training</h4>
+            <p class="mb-0 small" style="opacity: 0.9;">Build muscle and strength</p>
+          </div>
+          <div class="card-body p-4">
+            <div class="mb-3">
+              <span class="badge bg-primary mb-2">Level 1-10</span>
+              <span class="badge bg-success mb-2">4x/week</span>
+              <span class="badge bg-info mb-2">45-60 min</span>
+            </div>
+            <p class="text-muted mb-3">Progressive resistance training to build muscle mass and increase strength across all major muscle groups.</p>
+            <ul class="list-unstyled mb-4">
+              <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Compound movements</li>
+              <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Progressive overload</li>
+              <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Full body focus</li>
+              <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Recovery periods</li>
+            </ul>
+            <a href="{{ url_for('program_detail', program_type='strength') }}" class="btn btn-primary w-100" style="border-radius: 12px; padding: 0.75rem;">
+              <i class="fas fa-arrow-right me-2"></i>View Program
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cardio Program -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card program-card h-100" style="border-radius: 20px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; overflow: hidden;">
+          <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 2rem; text-align: center; color: white;">
+            <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+              <i class="fas fa-running" style="font-size: 2.5rem;"></i>
+            </div>
+            <h4 class="fw-bold mb-2">Cardio</h4>
+            <p class="mb-0 small" style="opacity: 0.9;">Improve cardiovascular health</p>
+          </div>
+          <div class="card-body p-4">
+            <div class="mb-3">
+              <span class="badge bg-danger mb-2">Level 1-10</span>
+              <span class="badge bg-success mb-2">3-5x/week</span>
+              <span class="badge bg-info mb-2">30-45 min</span>
+            </div>
+            <p class="text-muted mb-3">Boost your heart health and endurance with varied cardiovascular workouts from walking to running intervals.</p>
+            <ul class="list-unstyled mb-4">
+              <li class="mb-2"><i class="fas fa-check-circle text-danger me-2"></i>Interval training</li>
+              <li class="mb-2"><i class="fas fa-check-circle text-danger me-2"></i>Endurance building</li>
+              <li class="mb-2"><i class="fas fa-check-circle text-danger me-2"></i>Heart rate zones</li>
+              <li class="mb-2"><i class="fas fa-check-circle text-danger me-2"></i>Progressive intensity</li>
+            </ul>
+            <a href="{{ url_for('program_detail', program_type='cardio') }}" class="btn btn-danger w-100" style="border-radius: 12px; padding: 0.75rem;">
+              <i class="fas fa-arrow-right me-2"></i>View Program
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wellness Program -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card program-card h-100" style="border-radius: 20px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; overflow: hidden;">
+          <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 2rem; text-align: center; color: white;">
+            <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+              <i class="fas fa-spa" style="font-size: 2.5rem;"></i>
+            </div>
+            <h4 class="fw-bold mb-2">Wellness & Recovery</h4>
+            <p class="mb-0 small" style="opacity: 0.9;">Focus on recovery and flexibility</p>
+          </div>
+          <div class="card-body p-4">
+            <div class="mb-3">
+              <span class="badge" style="background: #8b5cf6; color: white; margin-bottom: 0.5rem;">Level 1-10</span>
+              <span class="badge bg-success mb-2">Daily</span>
+              <span class="badge bg-info mb-2">30-60 min</span>
+            </div>
+            <p class="text-muted mb-3">Gentle movements, stretching, and mindfulness practices to enhance recovery, flexibility, and overall well-being.</p>
+            <ul class="list-unstyled mb-4">
+              <li class="mb-2"><i class="fas fa-check-circle me-2" style="color: #8b5cf6;"></i>Yoga & stretching</li>
+              <li class="mb-2"><i class="fas fa-check-circle me-2" style="color: #8b5cf6;"></i>Mobility work</li>
+              <li class="mb-2"><i class="fas fa-check-circle me-2" style="color: #8b5cf6;"></i>Meditation</li>
+              <li class="mb-2"><i class="fas fa-check-circle me-2" style="color: #8b5cf6;"></i>Breathing exercises</li>
+            </ul>
+            <a href="{{ url_for('program_detail', program_type='wellness') }}" class="btn w-100" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; border-radius: 12px; padding: 0.75rem;">
+              <i class="fas fa-arrow-right me-2"></i>View Program
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- HIIT Program -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card program-card h-100" style="border-radius: 20px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; overflow: hidden;">
+          <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 2rem; text-align: center; color: white;">
+            <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+              <i class="fas fa-fire" style="font-size: 2.5rem;"></i>
+            </div>
+            <h4 class="fw-bold mb-2">HIIT</h4>
+            <p class="mb-0 small" style="opacity: 0.9;">Maximum efficiency training</p>
+          </div>
+          <div class="card-body p-4">
+            <div class="mb-3">
+              <span class="badge bg-warning mb-2">Level 2-10</span>
+              <span class="badge bg-success mb-2">3-4x/week</span>
+              <span class="badge bg-info mb-2">20-30 min</span>
+            </div>
+            <p class="text-muted mb-3">High-intensity interval training for maximum calorie burn and fitness gains in minimal time.</p>
+            <ul class="list-unstyled mb-4">
+              <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i>Short bursts</li>
+              <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i>High intensity</li>
+              <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i>Circuit training</li>
+              <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i>Fat burning</li>
+            </ul>
+            <a href="{{ url_for('program_detail', program_type='hiit') }}" class="btn btn-warning w-100" style="border-radius: 12px; padding: 0.75rem;">
+              <i class="fas fa-arrow-right me-2"></i>View Program
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Yoga Program -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card program-card h-100" style="border-radius: 20px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; overflow: hidden;">
+          <div style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); padding: 2rem; text-align: center; color: white;">
+            <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+              <i class="fas fa-om" style="font-size: 2.5rem;"></i>
+            </div>
+            <h4 class="fw-bold mb-2">Yoga</h4>
+            <p class="mb-0 small" style="opacity: 0.9;">Flexibility and mental clarity</p>
+          </div>
+          <div class="card-body p-4">
+            <div class="mb-3">
+              <span class="badge" style="background: #ec4899; color: white; margin-bottom: 0.5rem;">Level 1-10</span>
+              <span class="badge bg-success mb-2">Daily</span>
+              <span class="badge bg-info mb-2">30-60 min</span>
+            </div>
+            <p class="text-muted mb-3">Comprehensive yoga practice to improve flexibility, strength, balance, and mental well-being.</p>
+            <ul class="list-unstyled mb-4">
+              <li class="mb-2"><i class="fas fa-check-circle me-2" style="color: #ec4899;"></i>Various poses</li>
+              <li class="mb-2"><i class="fas fa-check-circle me-2" style="color: #ec4899;"></i>Breathing techniques</li>
+              <li class="mb-2"><i class="fas fa-check-circle me-2" style="color: #ec4899;"></i>Flow sequences</li>
+              <li class="mb-2"><i class="fas fa-check-circle me-2" style="color: #ec4899;"></i>Mindfulness</li>
+            </ul>
+            <a href="{{ url_for('program_detail', program_type='yoga') }}" class="btn w-100" style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); color: white; border: none; border-radius: 12px; padding: 0.75rem;">
+              <i class="fas fa-arrow-right me-2"></i>View Program
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<style>
+.program-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15) !important;
+}
+</style>
 {% endblock %}
