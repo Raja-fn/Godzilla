@@ -1,0 +1,31 @@
+{% extends "layouts/wellness_layout.html" %}
+{% block content %}
+
+<h2>Daily Check-In · Agent Signals</h2>
+
+<form method="post">
+  <label>Stress</label>
+  <select name="stress">
+    <option>low</option>
+    <option>medium</option>
+    <option>high</option>
+  </select>
+
+  <label>Sleep (hours)</label>
+  <input type="number" name="sleep">
+
+  <label>Energy</label>
+  <select name="energy">
+    <option>low</option>
+    <option>medium</option>
+    <option>high</option>
+  </select>
+
+  <label>
+    <input type="checkbox" name="missed"> Missed previous plan
+  </label>
+
+  <button>Submit Signals & Recompile Plan</button>
+</form>
+
+{% endblock %}

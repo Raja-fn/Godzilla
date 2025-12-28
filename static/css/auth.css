@@ -1,0 +1,17 @@
+.auth-wrapper {
+  display: flex;
+  height: 100vh;
+}
+
+.brand {
+  flex: 1;
+  background: linear-gradient(135deg,#eef2ff,#ecfeff);
+  padding: 60px;
+}
+
+.auth-card {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

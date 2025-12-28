@@ -1,0 +1,22 @@
+.pipeline-header {
+  background: white;
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pipeline .active {
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+}
