@@ -2,12 +2,14 @@ import 'package:ai_health/features/auth/pages/login_page.dart';
 import 'package:ai_health/features/form/pages/form_page.dart';
 import 'package:ai_health/features/home/widgets/feature_card.dart';
 import 'package:ai_health/features/meditation/pages/meditation_page.dart';
-// Note: Assuming these paths based on file search results.
 import 'package:ai_health/features/nutrition/pages/nutrition_page.dart';
 import 'package:ai_health/features/permissions/pages/permissions_page.dart';
 import 'package:ai_health/features/streak/pages/streak_page.dart';
 import 'package:ai_health/features/step/pages/step_page.dart';
 import 'package:ai_health/features/hydration/pages/hydration_page.dart';
+import 'package:ai_health/features/sleep/pages/sleep_page.dart';
+import 'package:ai_health/features/vitals/pages/vitals_page.dart';
+import 'package:ai_health/features/workouts/pages/workouts_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ai_health/features/hydration/bloc/hydration_bloc.dart';
 import 'package:ai_health/main.dart' show healthConnector;
@@ -213,6 +215,42 @@ class _HomePageState extends State<HomePage> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const StepPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  FeatureCard(
+                    title: 'Sleep',
+                    icon: Icons.bed,
+                    color: Colors.indigo,
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const SleepPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  FeatureCard(
+                    title: 'Vitals & Mood',
+                    icon: Icons.monitor_heart,
+                    color: Colors.pink,
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const VitalsPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  FeatureCard(
+                    title: 'Workouts',
+                    icon: Icons.fitness_center,
+                    color: Colors.teal,
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const WorkoutsPage(),
                         ),
                       );
                     },
