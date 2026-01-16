@@ -136,7 +136,7 @@ class PermissionsBloc extends Bloc<PermissionsEvent, PermissionsState> {
     developer.log(
       'PermissionsBloc: Requesting ${event.permissions.length} permissions',
     );
-    await healthConnector.requestPermissions(event.permissions);
+
     try {
       emit(
         PermissionsRequesting(
@@ -145,21 +145,33 @@ class PermissionsBloc extends Bloc<PermissionsEvent, PermissionsState> {
         ),
       );
 
+      // Request permissions from health connector (opens Health Connect app)
+      developer.log(
+        'PermissionsBloc: Calling healthConnector.requestPermissions() - This will open Health Connect app',
+      );
+      await healthConnector.requestPermissions(event.permissions);
+      developer.log(
+        'PermissionsBloc: Permission request completed, Health Connect app returned',
+      );
+
       final grantedPermissions = <HealthDataPermission, PermissionStatus>{};
       final deniedPermissions = <HealthDataPermission>[];
 
+      // Check the status of each permission after the request
       for (int i = 0; i < event.permissions.length; i++) {
         final permission = event.permissions[i];
 
         try {
-          developer.log('PermissionsBloc: Processing permission $permission');
+          developer.log(
+            'PermissionsBloc: Checking status of permission $permission',
+          );
 
-          // Get the current status
+          // Get the current status after request
           final status = await healthConnector.getPermissionStatus(permission);
           permissionStatuses[permission] = status;
 
           developer.log(
-            'PermissionsBloc: Permission $permission status: $status',
+            'PermissionsBloc: Permission $permission status after request: $status',
           );
 
           if (status == PermissionStatus.granted) {
@@ -169,7 +181,7 @@ class PermissionsBloc extends Bloc<PermissionsEvent, PermissionsState> {
           }
         } catch (e) {
           developer.log(
-            'PermissionsBloc: Error requesting permission $permission: $e',
+            'PermissionsBloc: Error checking permission $permission status: $e',
             error: e,
           );
           deniedPermissions.add(permission);
