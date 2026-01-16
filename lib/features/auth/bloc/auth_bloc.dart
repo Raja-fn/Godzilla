@@ -115,12 +115,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final response = await supabase.auth.signUp(
         email: event.email,
         password: event.password,
+        data: {'name': event.name},
       );
 
       if (response.user != null) {
         print(
           '✅ _onAuthSignUpWithEmail: Signup successful for ${response.user?.email}',
         );
+
+        // Store user name in profiles table
+        try {
+          await supabase.from('profiles').insert({
+            'id': response.user!.id,
+            'name': event.name,
+            'email': event.email,
+          });
+          print(
+            '✅ _onAuthSignUpWithEmail: User profile created with name: ${event.name}',
+          );
+        } catch (e) {
+          print('⚠️ _onAuthSignUpWithEmail: Failed to create user profile: $e');
+        }
+
         emit(AuthAuthenticated(response.user!));
       } else {
         print('❌ _onAuthSignUpWithEmail: User is null in response');

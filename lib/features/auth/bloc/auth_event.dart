@@ -14,8 +14,13 @@ class AuthLoginWithEmail extends AuthEvent {
 }
 
 class AuthSignUpWithEmail extends AuthEvent {
+  final String name;
   final String email;
   final String password;
 
-  AuthSignUpWithEmail({required this.email, required this.password});
+  AuthSignUpWithEmail({
+    required this.name,
+    required this.email,
+    required this.password,
+  });
 }

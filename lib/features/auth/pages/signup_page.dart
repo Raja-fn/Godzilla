@@ -1,4 +1,5 @@
 import 'package:ai_health/features/auth/pages/login_page.dart';
+import 'package:ai_health/features/form/pages/form_page.dart';
 import 'package:ai_health/features/home/pages/home_page.dart';
 import 'package:ai_health/utils/toast_shadcn.dart';
 import 'package:flutter/material.dart';
@@ -13,17 +14,20 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPage extends State<SignupPage> {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  String? _nameError;
   String? _emailError;
   String? _passwordError;
   String? _confirmPasswordError;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -33,14 +37,29 @@ class _SignupPage extends State<SignupPage> {
   bool _validateInputs() {
     bool isValid = true;
     setState(() {
+      _nameError = null;
       _emailError = null;
       _passwordError = null;
       _confirmPasswordError = null;
     });
 
+    final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
+
+    // Validate Name
+    if (name.isEmpty) {
+      setState(() {
+        _nameError = 'Name is required';
+      });
+      isValid = false;
+    } else if (name.length < 2) {
+      setState(() {
+        _nameError = 'Name must be at least 2 characters';
+      });
+      isValid = false;
+    }
 
     if (email.isEmpty) {
       setState(() {
@@ -86,11 +105,16 @@ class _SignupPage extends State<SignupPage> {
       return;
     }
 
+    final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
     context.read<auth_bloc.AuthBloc>().add(
-      auth_bloc.AuthSignUpWithEmail(email: email, password: password),
+      auth_bloc.AuthSignUpWithEmail(
+        name: name,
+        email: email,
+        password: password,
+      ),
     );
   }
 
@@ -183,7 +207,7 @@ class _SignupPage extends State<SignupPage> {
           print('🔴 SignupPage: Got AuthAuthenticated');
           //   _showSuccessDialog(); [TODO] Uncommetn when email validate
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => HomePage()),
+            MaterialPageRoute(builder: (context) => FormPage()),
           );
         }
       },
@@ -234,6 +258,52 @@ class _SignupPage extends State<SignupPage> {
                           ],
                         ),
                         const SizedBox(height: 32),
+
+                        // Name Field
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Full Name',
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(height: 8),
+                            TextField(
+                              controller: _nameController,
+                              enabled: !isLoading,
+                              decoration: InputDecoration(
+                                hintText: 'Enter your full name',
+                                prefixIcon: Icon(
+                                  Icons.person_outline,
+                                  size: 18,
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
+                                errorText: _nameError,
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 16,
+                                ),
+                              ),
+                              keyboardType: TextInputType.name,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
 
                         // Email Field
                         Column(

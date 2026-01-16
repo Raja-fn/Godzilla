@@ -21,9 +21,14 @@ class ProfileFormState extends AppFormState {
   bool get isCompleted {
     return questions.isNotEmpty &&
         questions.every((q) {
+          //          print(q.inputType);
           if (q.inputType == 'number') {
+            print(q.question);
+            print(q.selectedAnswer != null && q.selectedAnswer!.isNotEmpty);
             return q.selectedAnswer != null && q.selectedAnswer!.isNotEmpty;
           }
+          print(q.question);
+          print(q.selectedAnswer != null && q.selectedAnswer!.isNotEmpty);
           return q.selectedAnswer != null && q.selectedAnswer!.isNotEmpty;
         });
   }

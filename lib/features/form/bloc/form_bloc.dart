@@ -19,6 +19,7 @@ class FormBloc extends Bloc<FormEvent, AppFormState> {
         final profileData = ProfileData.defaultQuestions();
         emit(ProfileFormState(questions: profileData.questions));
       } catch (e) {
+        print(e);
         emit(FormFailure(e.toString()));
       }
     });
@@ -51,6 +52,7 @@ class FormBloc extends Bloc<FormEvent, AppFormState> {
           await _formRepository.saveProfileData(profileData);
           emit(FormSuccess());
         } catch (e) {
+          print(e);
           emit(FormFailure(e.toString()));
         }
       }
@@ -71,6 +73,7 @@ class FormBloc extends Bloc<FormEvent, AppFormState> {
           emit(ProfileFormState(questions: defaultProfile.questions));
         }
       } catch (e) {
+        print(e);
         emit(FormFailure(e.toString()));
       }
     });
@@ -87,6 +90,7 @@ class FormBloc extends Bloc<FormEvent, AppFormState> {
           ),
         );
       } catch (e) {
+        print(e);
         emit(FormFailure(e.toString()));
       }
     });
