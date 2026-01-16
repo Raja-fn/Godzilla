@@ -7,7 +7,7 @@ class AuthNavigationContext extends InheritedWidget {
   final Function(AuthPage) onPageChange;
 
   const AuthNavigationContext({
-    Key? key,
+    super.key,
     required this.currentPage,
     required this.onPageChange,
     required super.child,
