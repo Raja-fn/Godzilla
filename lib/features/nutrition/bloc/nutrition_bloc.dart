@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'dart:io';
 import '../models/nutrition_entry.dart';
 import '../repo/nutrition_repo.dart';
+import 'dart:developer' as developer;
 
 class NutritionBloc extends Bloc<NutritionEvent, NutritionState> {
   final NutritionRepository repository;
@@ -11,6 +12,7 @@ class NutritionBloc extends Bloc<NutritionEvent, NutritionState> {
   File? _selectedImage;
   final List<DishMetadata> _dishes = [];
   String _notes = '';
+  DateTime _mealTime = DateTime.now();
 
   NutritionBloc({required this.repository}) : super(NutritionInitial()) {
     on<NutritionImageSelected>(_onImageSelected);
@@ -19,9 +21,10 @@ class NutritionBloc extends Bloc<NutritionEvent, NutritionState> {
     on<NutritionAddVegetable>(_onAddVegetable);
     on<NutritionRemoveVegetable>(_onRemoveVegetable);
     on<NutritionUpdateNotes>(_onUpdateNotes);
+    on<NutritionUpdateMealTime>(_onUpdateMealTime);
     on<NutritionSubmit>(_onSubmit);
-    on<NutritionFetchEntries>(_onFetchEntries);
-    on<NutritionDeleteEntry>(_onDeleteEntry);
+    on<NutritionFetchMealsForDate>(_onFetchMealsForDate);
+    on<NutritionDeleteMeal>(_onDeleteMeal);
     on<NutritionReset>(_onReset);
   }
 
@@ -43,6 +46,7 @@ class NutritionBloc extends Bloc<NutritionEvent, NutritionState> {
         image: _selectedImage,
         dishes: List.unmodifiable(_dishes),
         notes: _notes,
+        mealTime: _mealTime,
       ),
     );
   }
@@ -58,6 +62,7 @@ class NutritionBloc extends Bloc<NutritionEvent, NutritionState> {
           image: _selectedImage,
           dishes: List.unmodifiable(_dishes),
           notes: _notes,
+          mealTime: _mealTime,
         ),
       );
     }
@@ -82,6 +87,7 @@ class NutritionBloc extends Bloc<NutritionEvent, NutritionState> {
           image: _selectedImage,
           dishes: List.unmodifiable(_dishes),
           notes: _notes,
+          mealTime: _mealTime,
         ),
       );
     }
@@ -109,6 +115,7 @@ class NutritionBloc extends Bloc<NutritionEvent, NutritionState> {
             image: _selectedImage,
             dishes: List.unmodifiable(_dishes),
             notes: _notes,
+            mealTime: _mealTime,
           ),
         );
       }
@@ -125,6 +132,22 @@ class NutritionBloc extends Bloc<NutritionEvent, NutritionState> {
         image: _selectedImage,
         dishes: List.unmodifiable(_dishes),
         notes: _notes,
+        mealTime: _mealTime,
+      ),
+    );
+  }
+
+  Future<void> _onUpdateMealTime(
+    NutritionUpdateMealTime event,
+    Emitter<NutritionState> emit,
+  ) async {
+    _mealTime = event.mealTime;
+    emit(
+      NutritionFormUpdated(
+        image: _selectedImage,
+        dishes: List.unmodifiable(_dishes),
+        notes: _notes,
+        mealTime: _mealTime,
       ),
     );
   }
@@ -150,45 +173,55 @@ class NutritionBloc extends Bloc<NutritionEvent, NutritionState> {
         userId: event.userId,
         dishes: _dishes,
         notes: _notes,
+        mealTime: _mealTime,
       );
 
-      // In production, use this instead:
-      // final entry = await repository.submitNutritionEntry(
-      //   imageFile: _selectedImage!,
-      //   userId: event.userId,
-      //   dishes: _dishes,
-      //   notes: _notes,
-      // );
-
-      emit(NutritionSubmitSuccess(entry));
+      emit(NutritionMealAdded(entry));
       _resetForm();
     } catch (e) {
+      developer.log('Error submitting nutrition: $e', error: e);
       emit(NutritionError(e.toString()));
     }
   }
 
-  Future<void> _onFetchEntries(
-    NutritionFetchEntries event,
+  Future<void> _onFetchMealsForDate(
+    NutritionFetchMealsForDate event,
     Emitter<NutritionState> emit,
   ) async {
     emit(NutritionLoading());
     try {
-      final entries = await repository.getNutritionEntries(event.userId);
-      emit(NutritionEntriesFetched(entries));
+      final meals = await repository.getMealsForDate(event.userId, event.date);
+
+      // Also fetch daily nutrition totals
+      final dailyNutrition = await repository.getDailyNutrition(
+        event.userId,
+        event.date,
+      );
+
+      developer.log('Fetched ${meals.length} meals for ${event.date}');
+      emit(
+        NutritionMealsLoaded(
+          meals: meals,
+          date: event.date,
+          dailyNutrition: dailyNutrition,
+        ),
+      );
     } catch (e) {
+      developer.log('Error fetching meals: $e', error: e);
       emit(NutritionError(e.toString()));
     }
   }
 
-  Future<void> _onDeleteEntry(
-    NutritionDeleteEntry event,
+  Future<void> _onDeleteMeal(
+    NutritionDeleteMeal event,
     Emitter<NutritionState> emit,
   ) async {
     emit(NutritionLoading());
     try {
-      await repository.deleteNutritionEntry(event.entryId);
-      emit(const NutritionDeleteSuccess());
+      await repository.deleteMeal(event.userId, event.mealId);
+      emit(const NutritionMealDeleted());
     } catch (e) {
+      developer.log('Error deleting meal: $e', error: e);
       emit(NutritionError(e.toString()));
     }
   }
@@ -205,5 +238,6 @@ class NutritionBloc extends Bloc<NutritionEvent, NutritionState> {
     _selectedImage = null;
     _dishes.clear();
     _notes = '';
+    _mealTime = DateTime.now();
   }
 }
