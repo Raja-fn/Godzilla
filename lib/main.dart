@@ -5,8 +5,13 @@ import 'package:ai_health/features/form/pages/form_page.dart';
 import 'package:ai_health/features/form/pages/survey_page.dart';
 import 'package:ai_health/features/form/repo/form_repository.dart';
 import 'package:ai_health/features/home/pages/home_page.dart';
+import 'package:ai_health/features/nutrition/bloc/nutrition_bloc.dart';
+import 'package:ai_health/features/nutrition/repo/nutrition_repo.dart';
 import 'package:ai_health/features/permissions/bloc/permissions_bloc.dart';
 import 'package:ai_health/features/permissions/pages/permissions_page.dart';
+import 'package:ai_health/features/streak/bloc/streak_bloc.dart';
+import 'package:ai_health/features/streak/repo/streak_repo.dart';
+import 'package:ai_health/features/step/bloc/step_bloc.dart';
 import 'package:ai_health/services/permissions_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +25,8 @@ late HealthConnector healthConnector;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  await Hive.openBox("streak_box");
+
   await Hive.openBox('user_data');
   await Supabase.initialize(
     url: 'https://pwpqkqxbzkinycrstkkt.supabase.co',
@@ -56,6 +63,12 @@ class MyApp extends StatelessWidget {
             create: (context) =>
                 PermissionsBloc(healthConnector: healthConnector),
           ),
+          BlocProvider<NutritionBloc>(
+            create: (context) =>
+                NutritionBloc(repository: NutritionRepository()),
+          ),
+          BlocProvider(create: (context) => StreakBloc(StreakRepository())),
+          BlocProvider(create: (context) => StepBloc()),
         ],
         child: MaterialApp(
           title: 'AI Health',

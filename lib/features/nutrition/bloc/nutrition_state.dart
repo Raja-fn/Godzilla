@@ -26,15 +26,17 @@ class NutritionFormUpdated extends NutritionState {
   final File? image;
   final List<DishMetadata> dishes;
   final String notes;
+  final DateTime mealTime;
 
   const NutritionFormUpdated({
     required this.image,
     required this.dishes,
     required this.notes,
+    required this.mealTime,
   });
 
   @override
-  List<Object?> get props => [image, dishes, notes];
+  List<Object?> get props => [image, dishes, notes, mealTime];
 }
 
 class NutritionSubmitSuccess extends NutritionState {
@@ -66,4 +68,32 @@ class NutritionError extends NutritionState {
 
   @override
   List<Object?> get props => [message];
+}
+
+class NutritionMealsLoaded extends NutritionState {
+  final List<NutritionEntry> meals;
+  final DateTime date;
+  final NutritionInfo? dailyNutrition;
+
+  const NutritionMealsLoaded({
+    required this.meals,
+    required this.date,
+    this.dailyNutrition,
+  });
+
+  @override
+  List<Object?> get props => [meals, date, dailyNutrition];
+}
+
+class NutritionMealAdded extends NutritionState {
+  final NutritionEntry entry;
+
+  const NutritionMealAdded(this.entry);
+
+  @override
+  List<Object?> get props => [entry];
+}
+
+class NutritionMealDeleted extends NutritionState {
+  const NutritionMealDeleted();
 }

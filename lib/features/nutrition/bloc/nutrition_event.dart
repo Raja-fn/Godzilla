@@ -93,3 +93,32 @@ class NutritionDeleteEntry extends NutritionEvent {
 }
 
 class NutritionReset extends NutritionEvent {}
+
+class NutritionUpdateMealTime extends NutritionEvent {
+  final DateTime mealTime;
+
+  const NutritionUpdateMealTime(this.mealTime);
+
+  @override
+  List<Object> get props => [mealTime];
+}
+
+class NutritionFetchMealsForDate extends NutritionEvent {
+  final String userId;
+  final DateTime date;
+
+  const NutritionFetchMealsForDate(this.userId, this.date);
+
+  @override
+  List<Object> get props => [userId, date];
+}
+
+class NutritionDeleteMeal extends NutritionEvent {
+  final String userId;
+  final String mealId;
+
+  const NutritionDeleteMeal(this.userId, this.mealId);
+
+  @override
+  List<Object> get props => [userId, mealId];
+}
