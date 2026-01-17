@@ -966,3 +966,31 @@ body::before,
 body::after {
   display: none !important;
 }
+/* New Premium Utilities */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.badge-item {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.badge-item:hover {
+  transform: scale(1.05);
+  background: white !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.border-dashed {
+  border: 2px dashed #e2e8f0 !important;
+}
+
+.rounded-4 {
+  border-radius: 1rem !important;
+}
