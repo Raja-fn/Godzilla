@@ -6,6 +6,7 @@ __pycache__/
 .Python
 env/
 venv/
+venv_new/
 ENV/
 build/
 develop-eggs/
@@ -52,3 +53,11 @@ Thumbs.db
 *.log
 agent_error.log
 
+# Misc
+*.class
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/

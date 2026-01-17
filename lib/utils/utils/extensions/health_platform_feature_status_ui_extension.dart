@@ -1,0 +1,14 @@
+import 'package:health_connector/health_connector_internal.dart'
+    show HealthPlatformFeatureStatus;
+import 'package:ai_health/utils/constants/app_texts.dart';
+
+/// Extension on [HealthPlatformFeatureStatus] to provide UI-related properties.
+extension HealthPlatformFeatureStatusUI on HealthPlatformFeatureStatus {
+  /// Returns the display name for this feature status.
+  String get displayName {
+    return switch (this) {
+      HealthPlatformFeatureStatus.available => AppTexts.available,
+      HealthPlatformFeatureStatus.unavailable => AppTexts.unavailable,
+    };
+  }
+}

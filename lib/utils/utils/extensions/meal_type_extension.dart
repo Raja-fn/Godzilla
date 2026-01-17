@@ -1,0 +1,16 @@
+import 'package:health_connector/health_connector_internal.dart' show MealType;
+import 'package:ai_health/utils/constants/app_texts.dart';
+
+/// Extension providing display names for [MealType] enum values.
+extension MealTypeDisplayName on MealType {
+  /// Returns the localized display name for this meal type.
+  String get displayName {
+    return switch (this) {
+      MealType.unknown => AppTexts.unknown,
+      MealType.breakfast => AppTexts.mealTypeBreakfast,
+      MealType.lunch => AppTexts.mealTypeLunch,
+      MealType.dinner => AppTexts.mealTypeDinner,
+      MealType.snack => AppTexts.mealTypeSnack,
+    };
+  }
+}
