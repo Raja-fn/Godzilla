@@ -551,11 +551,11 @@
       "total_logs": 12,
       "workouts_completed": 12,
       "fitness_sync": {
-        "steps": 5168,
-        "hrv": 65,
-        "vo2max": 35,
-        "active_minutes": 58,
-        "last_sync": "07:41 AM"
+        "steps": 10186,
+        "hrv": 79,
+        "vo2max": 38,
+        "active_minutes": 69,
+        "last_sync": "09:08 AM"
       }
     },
     {
