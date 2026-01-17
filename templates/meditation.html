@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section class="meditation-page py-4">
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <h1 class="h3 fw-bold mb-1">Mindful Sanctuary</h1>
+                <p class="text-muted">Guided practices to restore your mental balance</p>
+            </div>
+            <div class="col-lg-4 text-end">
+                <div class="card bg-primary text-white p-3 border-0 shadow-sm" style="border-radius: 20px;">
+                    <div class="small opacity-75">Daily Zen Minutes</div>
+                    <div class="h4 fw-bold mb-0">12 / 20 min</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Featured Session -->
+        <div class="card p-0 border-0 shadow-sm mb-5 overflow-hidden"
+            style="border-radius: 28px; background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'); background-size: cover; background-position: center;">
+            <div class="p-5 text-white">
+                <span class="badge bg-white text-dark mb-3 px-3 py-2 rounded-pill">Daily Recommendation</span>
+                <h2 class="fw-bold mb-3 display-6">Sunset Reflection</h2>
+                <p class="lead mb-4 opacity-100" style="max-width: 500px;">A 10-minute guided session to release the
+                    tension of the day and prepare for restful sleep.</p>
+                <button class="btn btn-light btn-lg rounded-pill px-5 fw-bold"
+                    onclick="startMeditation('Sunset Reflection', 10)">
+                    <i class="fas fa-play me-2"></i> Play Now
+                </button>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card p-3 h-100 text-center border-0 shadow-sm hover-up" style="border-radius: 24px;">
+                    <div class="mb-3 mt-2" style="font-size: 3rem;">🌬️</div>
+                    <h6 class="fw-bold mb-1">Anxiety Relief</h6>
+                    <p class="extra-small text-muted">5 Minutes • Focus</p>
+                    <button class="btn btn-soft-primary rounded-pill mt-auto"
+                        onclick="startMeditation('Anxiety Relief', 5)">Start</button>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card p-3 h-100 text-center border-0 shadow-sm hover-up" style="border-radius: 24px;">
+                    <div class="mb-3 mt-2" style="font-size: 3rem;">🌿</div>
+                    <h6 class="fw-bold mb-1">Nature Morning</h6>
+                    <p class="extra-small text-muted">15 Minutes • Energy</p>
+                    <button class="btn btn-soft-success rounded-pill mt-auto"
+                        onclick="startMeditation('Nature Morning', 15)">Start</button>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card p-3 h-100 text-center border-0 shadow-sm hover-up" style="border-radius: 24px;">
+                    <div class="mb-3 mt-2" style="font-size: 3rem;">⚡</div>
+                    <h6 class="fw-bold mb-1">Sharp Focus</h6>
+                    <p class="extra-small text-muted">3 Minutes • productivity</p>
+                    <button class="btn btn-soft-warning rounded-pill mt-auto"
+                        onclick="startMeditation('Sharp Focus', 3)">Start</button>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card p-3 h-100 text-center border-0 shadow-sm hover-up" style="border-radius: 24px;">
+                    <div class="mb-3 mt-2" style="font-size: 3rem;">🌙</div>
+                    <h6 class="fw-bold mb-1">Deep Sleep</h6>
+                    <p class="extra-small text-muted">20 Minutes • Recovery</p>
+                    <button class="btn btn-soft-info rounded-pill mt-auto"
+                        onclick="startMeditation('Deep Sleep', 20)">Start</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Player Overlay (Simple simulation) -->
+<div id="meditationPlayer"
+    class="fixed-bottom p-4 bg-white shadow-lg border-top d-none animate__animated animate__slideInUp"
+    style="border-radius: 30px 30px 0 0; z-index: 1050;">
+    <audio id="ambientAudio" loop></audio>
+    <div class="container">
+        <div class="d-flex align-items-center">
+            <div class="player-visual me-4 bg-light d-flex align-items-center justify-content-center"
+                style="width: 80px; height: 80px; border-radius: 20px; position: relative;">
+                <div class="pulse-ring"></div>
+                <div class="fw-bold text-primary h4 mb-0" id="timerDisplay" style="position: relative; z-index: 2;">0:00
+                </div>
+            </div>
+            <div class="flex-grow-1">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <h5 class="fw-bold mb-0" id="currentSessionTitle">Session Title</h5>
+                    <span id="musicStatus" class="badge bg-soft-primary text-primary extra-small">
+                        <i class="fas fa-music me-1"></i> Ambient Active
+                    </span>
+                </div>
+                <div class="progress mt-2" style="height: 6px; border-radius: 3px;">
+                    <div id="playerProgress" class="progress-bar bg-primary" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="ms-4 d-flex align-items-center gap-3">
+                <button class="btn btn-primary rounded-circle p-3 shadow-sm" onclick="togglePlay()" id="playPauseBtn"
+                    style="width: 56px; height: 56px;">
+                    <i class="fas fa-pause"></i>
+                </button>
+                <div class="d-flex flex-column align-items-center">
+                    <button class="btn btn-link text-muted p-0" onclick="closePlayer()">
+                        <i class="fas fa-times fa-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .extra-small {
+        font-size: 0.75rem;
+    }
+
+    .bg-soft-primary {
+        background: #eef2ff;
+    }
+
+    .btn-soft-primary {
+        background: #eef2ff;
+        color: #4f46e5;
+        border: none;
+    }
+
+    .btn-soft-success {
+        background: #f0fdf4;
+        color: #16a34a;
+        border: none;
+    }
+
+    .btn-soft-warning {
+        background: #fffbeb;
+        color: #d97706;
+        border: none;
+    }
+
+    .btn-soft-info {
+        background: #f0f9ff;
+        color: #0284c7;
+        border: none;
+    }
+
+    .hover-up:hover {
+        transform: translateY(-8px);
+        transition: transform 0.3s;
+    }
+
+    .pulse-ring {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 4px solid var(--primary);
+        border-radius: 20px;
+        animation: meditationPulse 4s infinite ease-in-out;
+        opacity: 0.5;
+    }
+
+    @keyframes meditationPulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.5;
+        }
+
+        50% {
+            transform: scale(1.15);
+            opacity: 0.1;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 0.5;
+        }
+    }
+</style>
+
+<script>
+    let timerInterval;
+    let currentSeconds = 0;
+    let totalSeconds = 0;
+    let isPlaying = false;
+    const audio = document.getElementById('ambientAudio');
+
+    const tracks = {
+        'Sunset Reflection': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+        'Anxiety Relief': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+        'Nature Morning': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
+        'Sharp Focus': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+        'Deep Sleep': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3'
+    };
+
+    function startMeditation(title, minutes) {
+        document.getElementById('meditationPlayer').classList.remove('d-none');
+        document.getElementById('currentSessionTitle').innerText = title;
+
+        // Load Track
+        if (tracks[title]) {
+            audio.src = tracks[title];
+            audio.play().catch(e => console.log("Audio play blocked by browser", e));
+        }
+
+        totalSeconds = minutes * 60;
+        currentSeconds = 0;
+        isPlaying = true;
+        updateDisplay();
+
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            if (isPlaying) {
+                currentSeconds++;
+                updateDisplay();
+                if (currentSeconds >= totalSeconds) {
+                    finishMeditation();
+                }
+            }
+        }, 1000);
+    }
+
+    function updateDisplay() {
+        const min = Math.floor(currentSeconds / 60);
+        const sec = currentSeconds % 60;
+        document.getElementById('timerDisplay').innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        const percent = (currentSeconds / totalSeconds) * 100;
+        document.getElementById('playerProgress').style.width = `${percent}%`;
+    }
+
+    function togglePlay() {
+        isPlaying = !isPlaying;
+        const btn = document.getElementById('playPauseBtn');
+        btn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+
+        if (isPlaying) {
+            audio.play();
+            document.getElementById('musicStatus').innerHTML = '<i class="fas fa-music me-1"></i> Ambient Active';
+        } else {
+            audio.pause();
+            document.getElementById('musicStatus').innerHTML = '<i class="fas fa-pause me-1"></i> Music Paused';
+        }
+    }
+
+    function finishMeditation() {
+        clearInterval(timerInterval);
+        audio.pause();
+        toast("Meditation complete. You are centered. ✨");
+        closePlayer();
+    }
+
+    function closePlayer() {
+        document.getElementById('meditationPlayer').classList.add('d-none');
+        clearInterval(timerInterval);
+        audio.pause();
+        audio.currentTime = 0;
+    }
+
+    function toast(msg) {
+        const alertBox = document.createElement('div');
+        alertBox.style.position = 'fixed';
+        alertBox.style.bottom = '20px';
+        alertBox.style.right = '20px';
+        alertBox.style.background = 'var(--primary)';
+        alertBox.style.color = 'white';
+        alertBox.style.padding = '12px 24px';
+        alertBox.style.borderRadius = '16px';
+        alertBox.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+        alertBox.style.zIndex = '9999';
+        alertBox.style.fontWeight = '600';
+        alertBox.innerText = msg;
+        document.body.appendChild(alertBox);
+        setTimeout(() => {
+            alertBox.style.opacity = '0';
+            alertBox.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => alertBox.remove(), 500);
+        }, 3000);
+    }
+</script>
+
+{% endblock %}

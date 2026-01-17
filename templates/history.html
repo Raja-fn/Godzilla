@@ -1,44 +1,187 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>History</h1>
+<section class="history-page py-4">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+      <div>
+        <h1 class="h3 fw-bold mb-1">Health Journey</h1>
+        <p class="text-muted mb-0">Review your past logs and AI-driven insights</p>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary rounded-pill px-4" onclick="window.print()">
+          <i class="fas fa-print me-2"></i> Print Report
+        </button>
+      </div>
+    </div>
 
-<h3>Daily Logs</h3>
-{% if logs %}
-  <table class="table table-striped">
-    <thead><tr><th>Date</th><th>Stress</th><th>Sleep</th><th>Energy</th><th>Missed</th></tr></thead>
-    <tbody>
-      {% for l in logs %}
-        <tr>
-          <td>{{ l.date }}</td>
-          <td>{{ l.stress_level }}</td>
-          <td>{{ l.sleep_hours }}</td>
-          <td>{{ l.energy_level }}</td>
-          <td>{{ 'Yes' if l.missed_workout else 'No' }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-{% else %}
-  <p>No logs available.</p>
-{% endif %}
+    <!-- History Tabs -->
+    <ul class="nav nav-pills mb-4 gap-2" id="historyTabs" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active rounded-pill px-4" data-bs-toggle="pill" data-bs-target="#tab-logs">Daily
+          Logs</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link rounded-pill px-4" data-bs-toggle="pill" data-bs-target="#tab-decisions">AI
+          Decisions</button>
+      </li>
+    </ul>
 
-<h3>Agent Decisions</h3>
-{% if decisions %}
-  <table class="table table-bordered">
-    <thead><tr><th>Date</th><th>Goal</th><th>Wellness</th><th>Plan</th></tr></thead>
-    <tbody>
-      {% for d in decisions %}
-        <tr>
-          <td>{{ d.date }}</td>
-          <td>{{ d.goal_status }}</td>
-          <td>{{ d.wellness_state }}</td>
-          <td>{{ d.final_plan }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-{% else %}
-  <p>No decisions recorded.</p>
-{% endif %}
+    <div class="tab-content" id="historyTabContent">
+      <!-- Daily Logs Tab -->
+      <div class="tab-pane fade show active" id="tab-logs">
+        <div class="card border-0 shadow-sm" style="border-radius: 24px; overflow: hidden;">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+              <thead class="bg-light">
+                <tr>
+                  <th class="ps-4 py-3">Date</th>
+                  <th>Mood/Wellness</th>
+                  <th>Sleep</th>
+                  <th>Energy</th>
+                  <th>Stress</th>
+                  <th>Activity</th>
+                  <th class="pe-4">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for l in logs %}
+                <tr>
+                  <td class="ps-4 fw-bold text-primary">{{ l.date }}</td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <span class="fs-4 me-2">
+                        {% if l.mood == 'Great' %}🤩
+                        {% elif l.mood == 'Good' %}😊
+                        {% elif l.mood == 'Neutral' %}😐
+                        {% elif l.mood == 'Low' %}😔
+                        {% elif l.mood == 'Angry' %}😠
+                        {% else %}✨{% endif %}
+                      </span>
+                      <span class="small fw-medium">{{ l.mood or 'Check-in' }}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <i class="fas fa-bed text-muted me-2 small"></i>
+                      <span>{{ l.sleep_hours }}h</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span
+                      class="badge rounded-pill {% if l.energy_level == 'high' %}bg-success{% elif l.energy_level == 'low' %}bg-warning text-dark{% else %}bg-info{% endif %} px-3">
+                      {{ l.energy_level|capitalize }}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      class="badge rounded-pill {% if l.stress_level == 'high' %}bg-danger{% elif l.stress_level == 'low' %}bg-success{% else %}bg-warning text-dark{% endif %} px-3">
+                      {{ l.stress_level|capitalize }}
+                    </span>
+                  </td>
+                  <td>
+                    {% if l.missed_workout %}
+                    <span class="text-danger small fw-bold"><i class="fas fa-times-circle me-1"></i> Missed</span>
+                    {% else %}
+                    <span class="text-success small fw-bold"><i class="fas fa-check-circle me-1"></i> Done</span>
+                    {% endif %}
+                  </td>
+                  <td class="pe-4">
+                    <p class="small text-muted mb-0 text-truncate" style="max-width: 150px;" title="{{ l.notes }}">
+                      {{ l.notes or '---' }}
+                    </p>
+                  </td>
+                </tr>
+                {% else %}
+                <tr>
+                  <td colspan="7" class="text-center py-5 text-muted">
+                    <i class="fas fa-calendar-times fa-3x mb-3 opacity-25"></i>
+                    <p>No health logs found for your account yet.</p>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
+      <!-- AI Decisions Tab -->
+      <div class="tab-pane fade" id="tab-decisions">
+        <div class="row g-4">
+          {% for d in decisions %}
+          <div class="col-md-6">
+            <div class="card p-4 border-0 shadow-sm h-100" style="border-radius: 24px;">
+              <div class="d-flex justify-content-between mb-3 align-items-center">
+                <span class="badge bg-soft-primary text-primary px-3 py-2 rounded-pill small fw-bold">
+                  <i class="fas fa-robot me-1"></i> Agent Decision
+                </span>
+                <span class="text-muted extra-small">{{ d.date }}</span>
+              </div>
+              <h6 class="fw-bold mb-3">Goal: <span class="text-primary">{{ d.goal_status }}</span></h6>
+
+              <div class="mb-3 p-3 bg-light" style="border-radius: 16px;">
+                <div class="small fw-bold text-muted mb-1">Wellness Assessment</div>
+                <div class="small">{{ d.wellness_state }}</div>
+              </div>
+
+              <div class="mb-3">
+                <div class="small fw-bold text-muted mb-1">Recommended Plan</div>
+                <div class="p-3 border-start border-4 border-primary bg-white rounded-end" style="font-size: 0.9rem;">
+                  {{ d.final_plan }}
+                </div>
+              </div>
+
+              {% if d.ai_recommendation %}
+              <div class="mt-auto pt-3 border-top">
+                <div class="d-flex align-items-start">
+                  <div class="fs-5 me-2">💡</div>
+                  <div class="extra-small text-muted font-italic">{{ d.ai_recommendation }}</div>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          {% else %}
+          <div class="col-12 py-5 text-center text-muted">
+            <i class="fas fa-brain fa-3x mb-3 opacity-25"></i>
+            <p>Our AI coach hasn't made any specific decisions for your profile yet.</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .extra-small {
+    font-size: 0.7rem;
+  }
+
+  .bg-soft-primary {
+    background: #eef2ff;
+  }
+
+  .nav-pills .nav-link.active {
+    background-color: var(--primary);
+  }
+
+  .nav-pills .nav-link {
+    color: var(--primary);
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+  }
+
+  .table th {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #f8fbff;
+    cursor: pointer;
+  }
+</style>
 {% endblock %}

@@ -1,152 +1,195 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ title or "Alivea - Your Health, Simplified" }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ static_version }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
-  <body>
-    <!-- Left Sidebar Navigation -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <a href="/" class="sidebar-logo d-flex align-items-center">
-          <img src="{{ url_for('static', filename='logo.svg') }}" alt="Alivea Logo" class="logo-icon">
-          <span class="logo-text">Alivea</span>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title or "Alivea - Your Health, Simplified" }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ static_version }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <!-- Left Sidebar Navigation -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="sidebar-logo d-flex align-items-center">
+        <img src="{{ url_for('static', filename='logo.svg') }}" alt="Alivea Logo" class="logo-icon">
+        <span class="logo-text">Alivea</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-category-label">Menu</div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="/" class="nav-link" title="Home">
+            <i class="fas fa-th-large nav-icon"></i>
+            <span class="nav-text">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/log" class="nav-link" title="Check in">
+            <i class="fas fa-plus-circle nav-icon"></i>
+            <span class="nav-text">Record Health</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/history" class="nav-link" title="History">
+            <i class="fas fa-calendar-alt nav-icon"></i>
+            <span class="nav-text">Activity History</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="nav-category-label mt-4">Growth</div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="/programs" class="nav-link" title="Programs">
+            <i class="fas fa-mountain nav-icon"></i>
+            <span class="nav-text">Fitness Programs</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/analytics" class="nav-link" title="Analytics">
+            <i class="fas fa-chart-pie nav-icon"></i>
+            <span class="nav-text">Health Insights</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/goals" class="nav-link" title="Goals">
+            <i class="fas fa-bullseye nav-icon"></i>
+            <span class="nav-text">Personal Goals</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/wearables" class="nav-link" title="Wearables">
+            <i class="fas fa-watch-fitness nav-icon"></i>
+            <span class="nav-text">Wearable Hub</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/nutrition" class="nav-link" title="Nutrition">
+            <i class="fas fa-utensils nav-icon"></i>
+            <span class="nav-text">Nutrition & Water</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/meditation" class="nav-link" title="Meditation">
+            <i class="fas fa-spa nav-icon"></i>
+            <span class="nav-text">Mindful Sanctuary</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/medical" class="nav-link" title="Medical">
+            <i class="fas fa-file-medical nav-icon"></i>
+            <span class="nav-text">Medical Records</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="nav-category-label mt-4">Personal</div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="/profile" class="nav-link" title="Profile">
+            <i class="fas fa-user-circle nav-icon"></i>
+            <span class="nav-text">My Profile</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      {% if current_user_profile %}
+      <div class="user-profile">
+        <a href="/profile" class="user-link">
+          {% if current_user_profile.profile_photo %}
+          <img src="data:image/jpeg;base64,{{ current_user_profile.profile_photo }}" alt="Profile" class="user-avatar">
+          {% else %}
+          <div class="user-avatar-initial">
+            {{ user_name[0].upper() if user_name else 'U' }}
+          </div>
+          {% endif %}
+          <div class="user-info">
+            <span class="user-name">{{ user_name or 'User' }}</span>
+            <span class="user-email">{{ current_user_profile.email[:20] if current_user_profile.email else
+              'user@alivea.com' }}</span>
+          </div>
+        </a>
+        <a href="/logout" class="logout-btn" title="Logout">
+          <i class="fas fa-power-off"></i>
         </a>
       </div>
-      
-      <nav class="sidebar-nav">
-        <ul class="nav-list">
-          <li class="nav-item">
-            <a href="/" class="nav-link" title="Home">
-              <i class="fas fa-home nav-icon"></i>
-              <span class="nav-text">Home</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="/log" class="nav-link" title="Check in">
-              <i class="fas fa-check-circle nav-icon"></i>
-              <span class="nav-text">Check in</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="/history" class="nav-link" title="History">
-              <i class="fas fa-history nav-icon"></i>
-              <span class="nav-text">History</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="/programs" class="nav-link" title="Programs">
-              <i class="fas fa-dumbbell nav-icon"></i>
-              <span class="nav-text">Programs</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="/analytics" class="nav-link" title="Analytics">
-              <i class="fas fa-chart-bar nav-icon"></i>
-              <span class="nav-text">Analytics</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="/profile" class="nav-link" title="Profile">
-              <i class="fas fa-user nav-icon"></i>
-              <span class="nav-text">Profile</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-      
-      <div class="sidebar-footer">
-        {% if current_user_profile %}
-        <div class="user-profile">
-          <a href="/profile" class="user-link">
-            {% if current_user_profile.profile_photo %}
-            <img src="data:image/jpeg;base64,{{ current_user_profile.profile_photo }}" alt="Profile" class="user-avatar">
-            {% else %}
-            <div class="user-avatar-initial">
-              {{ user_name[0].upper() if user_name else 'U' }}
-            </div>
-            {% endif %}
-            <div class="user-info">
-              <div class="user-name">{{ user_name or 'User' }}</div>
-              <div class="user-email">{{ current_user_profile.email[:20] if current_user_profile.email else 'user@alivea.com' }}...</div>
-            </div>
-          </a>
-          <a href="/logout" class="logout-btn" title="Logout">
-            <i class="fas fa-sign-out-alt"></i>
-          </a>
-        </div>
-        {% else %}
-        <div class="auth-buttons">
-          <a href="/login" class="btn-login-sidebar">
-            <i class="fas fa-sign-in-alt me-2"></i>
-            <span>Login</span>
-          </a>
-          <a href="/register" class="btn-signup-sidebar">
-            <i class="fas fa-user-plus me-2"></i>
-            <span>Sign Up</span>
-          </a>
-        </div>
-        {% endif %}
+      {% else %}
+      <div class="auth-buttons">
+        <a href="/login" class="btn-login-sidebar" title="Login">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Login</span>
+        </a>
+        <a href="/register" class="btn-signup-sidebar" title="Sign Up">
+          <i class="fas fa-user-plus"></i>
+          <span>Join Now</span>
+        </a>
       </div>
-    </aside>
+      {% endif %}
+    </div>
+  </aside>
 
-    <main class="main-content">
-      <div class="content-wrapper">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, msg in messages %}
-              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                {{ msg }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-              </div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
-
-        {% block content %}{% endblock %}
+  <main class="main-content">
+    <div class="content-wrapper">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, msg in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ msg }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
-    </main>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
 
-    <footer class="text-center py-4 border-top bg-white mt-5">
-      <div class="container">
-        <div class="row py-4">
-          <div class="col-md-12 mb-3">
-            <h6 class="fw-bold mb-3">Trusted by leading companies</h6>
-            <div class="d-flex justify-content-center align-items-center gap-4 flex-wrap">
-              <span class="text-muted" style="opacity: 0.6;">Uber</span>
-              <span class="text-muted" style="opacity: 0.6;">Spotify</span>
-              <span class="text-muted" style="opacity: 0.6;">Revolut</span>
-              <span class="text-muted" style="opacity: 0.6;">Klarna</span>
-              <span class="text-muted" style="opacity: 0.6;">Deloitte</span>
-              <span class="text-muted" style="opacity: 0.6;">WWE</span>
-              <span class="text-muted" style="opacity: 0.6;">Microsoft</span>
-            </div>
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <footer class="text-center py-4 border-top bg-white mt-5">
+    <div class="container">
+      <div class="row py-4">
+        <div class="col-md-12 mb-3">
+          <h6 class="fw-bold mb-3">Trusted by leading companies</h6>
+          <div class="d-flex justify-content-center align-items-center gap-4 flex-wrap">
+            <span class="text-muted" style="opacity: 0.6;">Uber</span>
+            <span class="text-muted" style="opacity: 0.6;">Spotify</span>
+            <span class="text-muted" style="opacity: 0.6;">Revolut</span>
+            <span class="text-muted" style="opacity: 0.6;">Klarna</span>
+            <span class="text-muted" style="opacity: 0.6;">Deloitte</span>
+            <span class="text-muted" style="opacity: 0.6;">WWE</span>
+            <span class="text-muted" style="opacity: 0.6;">Microsoft</span>
           </div>
         </div>
-        <div class="border-top pt-3">
-          <p class="text-muted mb-0">© {{year}} Alivea. All rights reserved.</p>
-        </div>
       </div>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      // Highlight active navigation item
-      document.addEventListener('DOMContentLoaded', function() {
-        const currentPath = window.location.pathname;
-        const navLinks = document.querySelectorAll('.sidebar-nav .nav-link');
-        
-        navLinks.forEach(link => {
-          const href = link.getAttribute('href');
-          if (href === currentPath || (currentPath === '/' && href === '/')) {
-            link.classList.add('active');
-          }
-        });
+      <div class="border-top pt-3">
+        <p class="text-muted mb-0">© {{year}} Alivea. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Highlight active navigation item
+    document.addEventListener('DOMContentLoaded', function () {
+      const currentPath = window.location.pathname;
+      const navLinks = document.querySelectorAll('.sidebar-nav .nav-link');
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === currentPath || (currentPath === '/' && href === '/')) {
+          link.classList.add('active');
+        }
       });
-    </script>
-  </body>
+    });
+  </script>
+</body>
+
 </html>

@@ -1,15 +1,161 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Settings</h1>
-<form method="post">
-  <div class="mb-3">
-    <label class="form-label">User ID</label>
-    <input type="text" name="user_id" class="form-control" value="{{ settings.user_id }}">
+<section class="settings-page py-4">
+  <div class="container-fluid">
+    <h1 class="h3 fw-bold mb-4">Application Settings</h1>
+
+    <div class="row g-4">
+      <!-- User Preferences -->
+      <div class="col-lg-6">
+        <div class="card p-4 border-0 shadow-sm" style="border-radius: 24px;">
+          <h5 class="fw-bold mb-4">Account Information</h5>
+
+          <div class="d-flex align-items-center mb-4 p-3 bg-light rounded-4">
+            <div
+              class="avatar me-3 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+              style="width: 60px; height: 60px; font-size: 1.5rem;">
+              {{ session.get('user_name', 'U')[0] | upper }}
+            </div>
+            <div>
+              <div class="fw-bold">{{ session.get('user_name', 'User') }}</div>
+              <div class="small text-muted">User ID: {{ session.get('user_id') }}</div>
+            </div>
+            <a href="{{ url_for('profile') }}" class="btn btn-sm btn-link ms-auto text-decoration-none fw-bold">Edit
+              Profile</a>
+          </div>
+
+          <form action="/settings" method="POST">
+            <div class="mb-4">
+              <label class="form-label small fw-bold text-muted">Data Persistence</label>
+              <div class="form-check form-switch p-3 border rounded-4">
+                <input class="form-check-input ms-0 me-3" type="checkbox" name="use_supabase" id="supabaseSwitch" {% if
+                  settings.use_supabase %}checked{% endif %}>
+                <label class="form-check-label fw-medium" for="supabaseSwitch">
+                  Enable Supabase Integration
+                  <div class="extra-small text-muted fw-normal">Sync your health data to the cloud for multi-device
+                    access.</div>
+                </label>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label small fw-bold text-muted">App Language</label>
+              <select class="form-select rounded-4">
+                <option value="en" selected>English (Default)</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label small fw-bold text-muted">Theme Selection</label>
+              <div class="d-flex gap-3">
+                <div class="theme-option p-2 border rounded-4 text-center active" style="flex: 1; cursor: pointer;">
+                  <i class="fas fa-sun mb-1"></i>
+                  <div class="extra-small fw-bold">Light</div>
+                </div>
+                <div class="theme-option p-2 border rounded-4 text-center"
+                  style="flex: 1; opacity: 0.5; cursor: not-allowed;">
+                  <i class="fas fa-moon mb-1"></i>
+                  <div class="extra-small fw-bold">Dark</div>
+                </div>
+                <div class="theme-option p-2 border rounded-4 text-center"
+                  style="flex: 1; opacity: 0.5; cursor: not-allowed;">
+                  <i class="fas fa-adjust mb-1"></i>
+                  <div class="extra-small fw-bold">Auto</div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 rounded-4 py-3 fw-bold shadow-sm">
+              <i class="fas fa-save me-2"></i> Save Settings
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="col-lg-6">
+        <div class="card p-4 border-0 shadow-sm" style="border-radius: 24px;">
+          <h5 class="fw-bold mb-4">Application Data</h5>
+
+          <div class="mb-4">
+            <p class="small text-muted">Manage your local storage and cached health metrics.</p>
+            <div class="d-grid gap-2">
+              <button class="btn btn-light rounded-4 text-start p-3 border"
+                onclick="toast('Cache cleared successfully! 🧹')">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="fw-bold small">Clear Local Cache</div>
+                    <div class="extra-small text-muted">Refresh your local analytics data</div>
+                  </div>
+                  <i class="fas fa-broom text-muted"></i>
+                </div>
+              </button>
+              <button class="btn btn-light rounded-4 text-start p-3 border" onclick="exportData()">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="fw-bold small">Export Health Data</div>
+                    <div class="extra-small text-muted">Download your data as JSON</div>
+                  </div>
+                  <i class="fas fa-download text-muted"></i>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-4 border-top">
+            <h6 class="text-danger fw-bold mb-3">Danger Zone</h6>
+            <div class="p-3 bg-soft-danger rounded-4">
+              <p class="extra-small mb-3">Deleting your account will permanently erase all health logs, medical records,
+                and personalized AI models. This action cannot be undone.</p>
+              <button class="btn btn-danger w-100 rounded-4 py-2 small fw-bold" onclick="confirmDeleteAccount()">
+                <i class="fas fa-trash-alt me-2"></i> Delete My Account
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="form-check mb-3">
-    <input class="form-check-input" type="checkbox" name="use_supabase" id="use_supabase" {% if settings.use_supabase %}checked{% endif %}>
-    <label class="form-check-label" for="use_supabase">Save to Supabase (if configured)</label>
-  </div>
-  <button class="btn btn-primary">Save Settings</button>
-</form>
+</section>
+
+<style>
+  .extra-small {
+    font-size: 0.7rem;
+  }
+
+  .bg-soft-danger {
+    background: #fff5f5;
+  }
+
+  .theme-option.active {
+    border-color: var(--primary) !important;
+    background: #eef2ff;
+    color: var(--primary);
+  }
+</style>
+
+<script>
+  function toast(msg) {
+    const box = document.createElement('div');
+    box.style.position = 'fixed'; box.style.bottom = '20px'; box.style.right = '20px';
+    box.style.background = 'var(--primary)'; box.style.color = 'white';
+    box.style.padding = '12px 24px'; box.style.borderRadius = '16px';
+    box.style.zIndex = '9999'; box.innerText = msg;
+    document.body.appendChild(box);
+    setTimeout(() => box.remove(), 3000);
+  }
+
+  function exportData() {
+    location.href = '/api/logs'; // Simple export
+  }
+
+  function confirmDeleteAccount() {
+    if (confirm('Are you ABSOLUTELY sure? This will delete all your health data forever.')) {
+      alert('Account deletion request received. For security, please contact support or use the full dashboard.');
+    }
+  }
+</script>
 {% endblock %}
