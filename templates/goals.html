@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section class="goals-page py-4">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 fw-bold mb-0">Progress Tracker</h1>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGoalModal">
+                <i class="fas fa-plus me-2"></i> Set New Goal
+            </button>
+        </div>
+
+        <div class="row g-4">
+            <!-- Active Goals -->
+            <div class="col-lg-8">
+                <div class="card p-4 h-100">
+                    <h5 class="fw-bold mb-4">Active Objectives</h5>
+                    <div class="row g-3">
+                        {% for goal in goals %}
+                        <div class="col-md-6">
+                            <div class="goal-card p-3 border h-100" style="border-radius: 20px;">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span class="badge bg-soft-primary text-primary px-3 py-1 rounded-pill">{{
+                                        goal.category }}</span>
+                                    <span class="small text-muted">Due: {{ goal.deadline }}</span>
+                                </div>
+                                <h6 class="fw-bold mb-1">{{ goal.title }}</h6>
+                                <p class="small text-muted mb-3">Target: {{ goal.target }}</p>
+                                <div class="progress mb-2" style="height: 8px; border-radius: 4px;">
+                                    <div class="progress-bar bg-primary" style="width: {{ goal.progress }}%"></div>
+                                </div>
+                                <div class="d-flex justify-content-between extra-small fw-bold">
+                                    <span>{{ goal.progress }}% complete</span>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-link p-0 text-decoration-none"
+                                            onclick="updateGoal('{{ goal.id }}')">Update</button>
+                                        <button class="btn btn-sm btn-link p-0 text-danger text-decoration-none"
+                                            onclick="deleteGoal('{{ goal.id }}')">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="col-12 text-center py-5">
+                            <div class="mb-3" style="font-size: 3rem; opacity: 0.2;">🎯</div>
+                            <p class="text-muted">No active goals. What would you like to achieve next?</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Achievements -->
+            <div class="col-lg-4">
+                <div class="card p-4 h-100">
+                    <h5 class="fw-bold mb-4">Milestones</h5>
+                    <div class="achievement-item d-flex align-items-center mb-3 p-3 bg-light"
+                        style="border-radius: 16px;">
+                        <div class="me-3 fs-2">🔥</div>
+                        <div>
+                            <div class="fw-bold small">7-Day Streak</div>
+                            <div class="text-muted extra-small">Consistent daily check-ins</div>
+                        </div>
+                        <div class="ms-auto text-success"><i class="fas fa-check-circle"></i></div>
+                    </div>
+                    <div class="achievement-item d-flex align-items-center mb-3 p-3 bg-light"
+                        style="border-radius: 16px; opacity: 0.5;">
+                        <div class="me-3 fs-2">💧</div>
+                        <div>
+                            <div class="fw-bold small">Hydration Hero</div>
+                            <div class="text-muted extra-small">Drink 8 glasses for 5 days</div>
+                        </div>
+                        <div class="ms-auto text-muted"><i class="fas fa-lock"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Goal Modal -->
+<div class="modal fade" id="addGoalModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="border-radius: 28px;">
+            <div class="modal-header border-0 p-4">
+                <h5 class="modal-title fw-bold">Set Personal Goal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/goals" method="POST">
+                <div class="modal-body p-4 pt-0">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">What is your goal?</label>
+                        <input type="text" name="title" class="form-control rounded-4"
+                            placeholder="e.g. Lose 5kg, Run 10km" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Category</label>
+                        <select name="category" class="form-select rounded-4">
+                            <option value="Weight Loss">Weight Loss</option>
+                            <option value="Fitness">Fitness</option>
+                            <option value="Mental Health">Mental Health</option>
+                            <option value="Nutrition">Nutrition</option>
+                            <option value="Habits">Habits</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Target Metric</label>
+                        <input type="text" name="target" class="form-control rounded-4"
+                            placeholder="e.g. 70kg, 10km total" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Deadline</label>
+                        <input type="date" name="deadline" class="form-control rounded-4" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="submit" class="btn btn-primary w-100 rounded-4 py-3 fw-bold">Commit to Goal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .extra-small {
+        font-size: 0.7rem;
+    }
+
+    .bg-soft-primary {
+        background: var(--pastel-blue);
+    }
+
+    .goal-card:hover {
+        transform: translateY(-5px);
+        transition: all 0.3s;
+        border-color: var(--primary) !important;
+        background: #fafbff;
+    }
+</style>
+
+<script>
+    async function updateGoal(id) {
+        try {
+            const resp = await fetch('/api/update-goal-progress', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, increment: 10 })
+            });
+            const data = await resp.json();
+            if (data.success) {
+                location.reload();
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function deleteGoal(id) {
+        if (!confirm('Are you sure you want to delete this goal?')) return;
+        try {
+            const resp = await fetch('/api/delete-item', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'goal', id })
+            });
+            const data = await resp.json();
+            if (data.success) {
+                location.reload();
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function toast(msg) {
+        const alertBox = document.createElement('div');
+        alertBox.style.position = 'fixed';
+        alertBox.style.bottom = '20px';
+        alertBox.style.right = '20px';
+        alertBox.style.background = 'var(--primary)';
+        alertBox.style.color = 'white';
+        alertBox.style.padding = '12px 24px';
+        alertBox.style.borderRadius = '16px';
+        alertBox.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+        alertBox.style.zIndex = '9999';
+        alertBox.style.fontWeight = '600';
+        alertBox.innerText = msg;
+        document.body.appendChild(alertBox);
+        setTimeout(() => {
+            alertBox.style.opacity = '0';
+            alertBox.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => alertBox.remove(), 500);
+        }, 3000);
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,55 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sun -->
+  <defs>
+    <radialGradient id="sunGradient" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#FFD700" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#FFA500" stop-opacity="0.8"/>
+    </radialGradient>
+    <linearGradient id="leftLeafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#14b8a6"/>
+    </linearGradient>
+    <linearGradient id="rightLeafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#84cc16"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Sun rays -->
+  <g id="sun">
+    <!-- Top rays -->
+    <path d="M 60 10 L 62 25 L 60 20 Z" fill="#FFD700" opacity="0.9"/>
+    <path d="M 60 10 L 58 25 L 60 20 Z" fill="#FFD700" opacity="0.9"/>
+    <path d="M 75 20 L 70 30 L 72 25 Z" fill="#FFD700" opacity="0.9"/>
+    <path d="M 45 20 L 50 30 L 48 25 Z" fill="#FFD700" opacity="0.9"/>
+    <path d="M 85 30 L 78 38 L 80 35 Z" fill="#FFD700" opacity="0.9"/>
+    <path d="M 35 30 L 42 38 L 40 35 Z" fill="#FFD700" opacity="0.9"/>
+    <!-- Side rays -->
+    <path d="M 95 50 L 88 55 L 90 52 Z" fill="#FFA500" opacity="0.8"/>
+    <path d="M 25 50 L 32 55 L 30 52 Z" fill="#FFA500" opacity="0.8"/>
+    <path d="M 100 70 L 92 72 L 95 70 Z" fill="#FFA500" opacity="0.8"/>
+    <path d="M 20 70 L 28 72 L 25 70 Z" fill="#FFA500" opacity="0.8"/>
+    <path d="M 95 90 L 88 85 L 90 88 Z" fill="#FFA500" opacity="0.8"/>
+    <path d="M 25 90 L 32 85 L 30 88 Z" fill="#FFA500" opacity="0.8"/>
+    <!-- Sun center -->
+    <circle cx="60" cy="50" r="18" fill="url(#sunGradient)"/>
+    <circle cx="60" cy="50" r="12" fill="#FFD700" opacity="0.9"/>
+  </g>
+  
+  <!-- Left leaf -->
+  <path d="M 35 75 Q 25 60, 30 45 Q 35 50, 40 55 Q 45 65, 50 75 Q 45 80, 40 85 Q 35 80, 35 75 Z" 
+        fill="url(#leftLeafGradient)" 
+        stroke="#0d9488" 
+        stroke-width="0.5"/>
+  
+  <!-- Right leaf -->
+  <path d="M 85 75 Q 95 60, 90 45 Q 85 50, 80 55 Q 75 65, 70 75 Q 75 80, 80 85 Q 85 80, 85 75 Z" 
+        fill="url(#rightLeafGradient)" 
+        stroke="#16a34a" 
+        stroke-width="0.5"/>
+  
+  <!-- Central sphere -->
+  <circle cx="60" cy="75" r="8" fill="#3b82f6" opacity="0.95"/>
+  <circle cx="60" cy="75" r="6" fill="#60a5fa" opacity="0.8"/>
+</svg>
+

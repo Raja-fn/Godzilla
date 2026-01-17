@@ -1,0 +1,1081 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Wellness Header & Greeting -->
+<section class="wellness-header mb-4 mt-4">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-lg-7">
+        <h1 class="hero-greeting">{{ friendly_advice.greeting }} 👋</h1>
+        <div class="d-flex align-items-center gap-3">
+          <p class="hero-sub mb-0">Ready to focus on your well-being today?</p>
+          <button class="btn btn-sm btn-outline-primary dropdown-toggle fw-bold" type="button" data-bs-toggle="dropdown"
+            style="border-radius: 12px; font-size: 0.75rem; border-width: 2px;">
+            <i class="fas fa-bullseye me-1"></i> Focus: {{ current_user_profile.goal|replace('_', ' ')|capitalize if
+            current_user_profile else 'Maintenance' }}
+          </button>
+          <ul class="dropdown-menu shadow-sm border-0" style="border-radius: 12px;">
+            <li><a class="dropdown-item small" href="#" onclick="toast('Focus set to: High Performance 🚀')">High
+                Performance</a></li>
+            <li><a class="dropdown-item small" href="#" onclick="toast('Focus set to: Active Recovery 🧘')">Active
+                Recovery</a></li>
+            <li><a class="dropdown-item small" href="#" onclick="toast('Focus set to: Strength Phase 🏋️')">Strength
+                Phase</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="sync-section d-flex align-items-center justify-content-end gap-3">
+          <div class="text-end">
+            <div class="d-flex align-items-center justify-content-end mb-1">
+              <span class="sync-pulse me-2" id="syncPulse"></span>
+              <span class="small fw-bold text-muted" id="syncStatusText">Smartphone Sync: Connected</span>
+            </div>
+            <div class="small text-muted-50" id="lastSyncTime" style="font-size: 0.7rem;">Last synced: Just now</div>
+          </div>
+          <button class="btn btn-primary shadow-sm" style="border-radius: 14px; padding: 10px 15px;" id="syncBtn"
+            onclick="syncFitnessData()">
+            <i class="fas fa-sync-alt" id="syncIcon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Insight Alerts -->
+{% if alerts %}
+<section class="alerts-section mb-5">
+  <div class="container-fluid">
+    <div class="d-flex gap-3 overflow-auto pb-2">
+      {% for alert in alerts %}
+      <div class="alert-card p-3 shadow-sm d-flex align-items-center alert-{{ alert.type }}"
+        style="min-width: 320px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05);">
+        <div class="me-3" style="font-size: 1.5rem;">{% if alert.type == 'warning' %}⚠️{% else %}💡{% endif %}</div>
+        <div class="small fw-medium">{{ alert.msg }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Mood & Smart Coach Activity -->
+<section class="wellness-essentials mb-5">
+  <div class="container-fluid">
+    <div class="row g-4">
+      <!-- Mood Selector -->
+      <div class="col-lg-4">
+        <div class="card p-4 h-100">
+          <h6 class="fw-bold mb-3">{{ friendly_advice.mood_prompt }}</h6>
+          <div class="mood-selector">
+            <button class="mood-btn" title="Great">🤩</button>
+            <button class="mood-btn" title="Good">😊</button>
+            <button class="mood-btn" title="Neutral">😐</button>
+            <button class="mood-btn" title="Low">😔</button>
+            <button class="mood-btn" title="Angry">😠</button>
+          </div>
+          <p class="text-muted small mt-3">Your mood helps me personalize your daily plan.</p>
+        </div>
+      </div>
+
+      <!-- Smart Coach Advice -->
+      <div class="col-lg-8">
+        <div class="coach-card h-100 flex-column align-items-stretch"
+          style="background: linear-gradient(135deg, var(--pastel-blue) 0%, #ffffff 100%);">
+          <div class="d-flex gap-3 mb-3">
+            <div class="coach-avatar shadow-sm border" style="font-size: 1.5rem; background: #fff;">🧠</div>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <h6 class="fw-bold mb-0 text-primary">Alivea AI Coach</h6>
+                <div class="extra-small fw-bold text-muted text-uppercase">AI Thinking...</div>
+              </div>
+              <div class="coach-bubble w-100 mb-2"
+                style="border-radius: 12px 20px 20px 20px; border: 1px solid rgba(0,0,0,0.05);">
+                {{ friendly_advice.coach_msg }}
+              </div>
+              <div class="p-2 px-3 bg-soft-primary rounded-4 mb-3"
+                style="font-size: 0.85rem; border-left: 4px solid var(--primary);">
+                <span class="fw-bold"><i class="fas fa-brain me-1"></i> Agent Thoughts:</span>
+                <span class="text-muted">{{ friendly_advice.agent_thoughts }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="suggestions-section mt-auto pt-3 border-top">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <h6 class="extra-small fw-bold text-muted text-uppercase mb-0">Smart Suggestions</h6>
+              <span class="badge bg-soft-success text-success rounded-pill px-2"
+                style="font-size: 0.65rem;">Dynamic</span>
+            </div>
+            <div class="row g-2">
+              {% for suggestion in friendly_advice.suggestions %}
+              <div class="col-md-4">
+                <div class="p-2 border rounded-4 bg-white d-flex align-items-center gap-2 transition-hover">
+                  <div class="fs-5">{{ suggestion.icon }}</div>
+                  <div class="extra-small fw-bold text-truncate">{{ suggestion.text }}</div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Core Metrics Section -->
+<section class="core-metrics mb-5">
+  <div class="container-fluid">
+    <div class="row g-4">
+      <!-- Wellness Score Ring -->
+      <div class="col-lg-4">
+        <div class="card p-4 text-center h-100"
+          style="--wellness-offset: {{ (wellness_score / 100 * 377) }}; border-radius: 30px; background: linear-gradient(145deg, #ffffff, #f8fafc);">
+          <h5 class="fw-bold mb-4">Wellness Score</h5>
+          <div class="score-ring mb-3 mx-auto">
+            <svg width="150" height="150" viewBox="0 0 140 140">
+              <circle cx="70" cy="70" r="60" fill="none" stroke="#f1f5f9" stroke-width="14"></circle>
+              <circle class="dynamic-stroke" cx="70" cy="70" r="60" fill="none" stroke="url(#scoreGradient)"
+                stroke-width="14" stroke-dasharray="377" stroke-dashoffset="0" stroke-linecap="round"
+                transform="rotate(-90 70 70)">
+              </circle>
+              <defs>
+                <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:var(--primary);stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#818cf8;stop-opacity:1" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="score-number">
+              <span class="score-value" style="font-size: 2.5rem; letter-spacing: -2px;">{{ wellness_score }}</span>
+              <span class="score-label fw-bold">Live</span>
+            </div>
+          </div>
+          <div class="px-3">
+            <p class="small text-muted mb-3">Your score is up <span class="text-success fw-bold">+4%</span> since
+              yesterday</p>
+            <div class="p-3 bg-white shadow-sm rounded-4 border d-flex align-items-center gap-3">
+              <div class="fs-3">🏆</div>
+              <div class="text-start">
+                <div class="extra-small fw-bold text-muted text-uppercase">Current Level</div>
+                <div class="fw-bold">Level {{ current_user_profile.level if current_user_profile else 1 }} Member</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gamified Milestone & Focus -->
+      <div class="col-lg-4">
+        <div class="card p-4 h-100" style="border-radius: 30px;">
+          <h5 class="fw-bold mb-4">Journey Progress</h5>
+          <div class="milestone-container mb-4">
+            <div class="d-flex justify-content-between mb-2">
+              <span class="small fw-bold">XP to Level {{ (current_user_profile.level|default(1)) + 1 }}</span>
+              <span class="small text-primary fw-bold">{{ current_user_profile.experience_points|default(0)
+                }}/100</span>
+            </div>
+            <div class="progress rounded-pill" style="height: 12px; background: #f1f5f9;">
+              <div class="progress-bar progress-bar-striped progress-bar-animated"
+                style="width: {{ current_user_profile.experience_points|default(0) }}%; background: var(--primary);">
+              </div>
+            </div>
+          </div>
+
+          <h6 class="extra-small fw-bold text-muted text-uppercase mb-3">Milestone Badges</h6>
+          <div class="d-flex gap-2 overflow-auto pb-3 mb-3 scrollbar-hide">
+            {% for badge in user_badges %}
+            <div class="badge-item text-center p-2 rounded-4 border bg-light flex-shrink-0" style="min-width: 80px;"
+              title="{{ badge.desc }}">
+              <div class="fs-4">{{ badge.icon }}</div>
+              <div class="extra-small fw-bold">{{ badge.name }}</div>
+            </div>
+            {% else %}
+            <div class="extra-small text-muted py-2 w-100 text-center border-dashed rounded-4">
+              Complete more goals to unlock badges! 🏆
+            </div>
+            {% endfor %}
+          </div>
+
+          <h6 class="extra-small fw-bold text-muted text-uppercase mb-3">Personalized Focus Points</h6>
+          <div class="focus-list d-grid gap-2">
+            <div class="focus-item p-2 px-3 border rounded-4 d-flex align-items-center gap-3 transition-hover">
+              <div class="p-2 bg-pastel-mint rounded-circle shadow-sm" style="font-size: 0.9rem;">🔋</div>
+              <div>
+                <div class="small fw-bold">Maintain Protein</div>
+                <div class="extra-small text-muted">Daily Goal: 150g</div>
+              </div>
+            </div>
+            <div class="focus-item p-2 px-3 border rounded-4 d-flex align-items-center gap-3 transition-hover">
+              <div class="p-2 bg-pastel-blue rounded-circle shadow-sm" style="font-size: 0.9rem;">💧</div>
+              <div>
+                <div class="small fw-bold">Goal: 8 Glasses</div>
+                <div class="extra-small text-muted">Hydration is key</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Biometric Sparklines -->
+      <div class="col-lg-4">
+        <div class="card p-4 h-100" style="border-radius: 30px;">
+          <h5 class="fw-bold mb-4">Live Biometrics</h5>
+          <div class="biometric-row mb-4">
+            <div class="d-flex justify-content-between align-items-end mb-2">
+              <div>
+                <div class="extra-small fw-bold text-muted text-uppercase">Heart Rate</div>
+                <div class="h4 fw-bold mb-0">72 <small class="text-muted fs-6">bpm</small></div>
+              </div>
+              <div class="text-end">
+                <span class="badge bg-soft-success text-success rounded-pill px-2">Normal</span>
+              </div>
+            </div>
+            <canvas id="hrSparkline" height="50"></canvas>
+          </div>
+
+          <div class="biometric-row">
+            <div class="d-flex justify-content-between align-items-end mb-2">
+              <div>
+                <div class="extra-small fw-bold text-muted text-uppercase">Body Weight</div>
+                <div class="h4 fw-bold mb-0">{{ current_user_profile.weight if current_user_profile else '75' }} <small
+                    class="text-muted fs-6">kg</small></div>
+              </div>
+              <div class="text-end">
+                <span class="text-muted extra-small">Last 7 Days</span>
+              </div>
+            </div>
+            <canvas id="weightSparkline" height="50"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Stats Grid -->
+<section class="quick-stats mb-5">
+  <div class="container-fluid">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="metric-card p-4 h-100" style="background: var(--pastel-peach);">
+          <div class="d-flex flex-column h-100">
+            <div class="d-flex justify-content-between mb-3">
+              <i class="fas fa-walking" style="font-size: 1.5rem; color: #f59e0b;"></i>
+              <span class="badge bg-white text-dark small">Movement</span>
+            </div>
+            <h3 class="fw-bold mb-1" id="statSteps">
+              {% if current_user and current_user.fitness_sync %}
+              {{ current_user.fitness_sync.steps }}
+              {% else %}
+              ---
+              {% endif %}
+            </h3>
+            <p class="text-muted small mb-0">Daily Steps</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="metric-card p-4 h-100" style="background: var(--pastel-mint);">
+          <div class="d-flex flex-column h-100">
+            <div class="d-flex justify-content-between mb-3">
+              <i class="fas fa-heartbeat" style="font-size: 1.5rem; color: var(--primary);"></i>
+              <span class="badge bg-white text-dark small">Recovery</span>
+            </div>
+            <h3 class="fw-bold mb-1" id="statHRV">
+              {% if current_user and current_user.fitness_sync %}
+              {{ current_user.fitness_sync.hrv }}
+              {% else %}
+              ---
+              {% endif %}
+              <small style="font-size: 0.9rem;">ms</small>
+            </h3>
+            <p class="text-muted small mb-0">Avg HRV</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="metric-card p-4 h-100" style="background: var(--pastel-blue);">
+          <div class="d-flex flex-column h-100">
+            <div class="d-flex justify-content-between mb-3">
+              <i class="fas fa-wind" style="font-size: 1.5rem; color: var(--secondary);"></i>
+              <span class="badge bg-white text-dark small">Capacity</span>
+            </div>
+            <h3 class="fw-bold mb-1" id="statVO2">
+              {% if current_user and current_user.fitness_sync %}
+              {{ current_user.fitness_sync.vo2max }}
+              {% else %}
+              ---
+              {% endif %}
+            </h3>
+            <p class="text-muted small mb-0">Est. VO2 Max</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Daily Nutrition Snapshot -->
+<section class="nutrition-snapshot mb-5">
+  <div class="container-fluid">
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card p-4 h-100" style="background: linear-gradient(135deg, #ffffff 0%, var(--pastel-blue) 100%);">
+          <div class="d-flex justify-content-between align-items-start mb-4">
+            <div>
+              <h5 class="fw-bold mb-1">Hydration Tracker</h5>
+              <p class="text-muted small">Stay fluid for peak cognition</p>
+            </div>
+            <div class="water-badge bg-white shadow-sm px-3 py-2" style="border-radius: 12px;">
+              <span class="fw-bold text-primary">{{ today_water }}</span> <small class="text-muted">/ 8
+                glasses</small>
+            </div>
+          </div>
+          <div class="d-flex gap-2 mb-4">
+            {% for i in range(8) %}
+            <div class="water-glass {% if i < today_water %}filled{% endif %}"
+              style="width: 20px; height: 35px; border-radius: 6px;">
+            </div>
+            {% endfor %}
+          </div>
+          <a href="/nutrition" class="btn btn-sm btn-outline-primary rounded-pill w-fit mt-auto"
+            style="width: fit-content;">Manage Hydration</a>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card p-4 h-100" style="background: linear-gradient(135deg, #ffffff 0%, var(--pastel-peach) 100%);">
+          <div class="d-flex justify-content-between align-items-start mb-4">
+            <div>
+              <h5 class="fw-bold mb-1">Nutritional Fuel</h5>
+              <p class="text-muted small">Daily energy consumption</p>
+            </div>
+            <div class="calories-badge bg-white shadow-sm px-3 py-2" style="border-radius: 12px;">
+              <span class="fw-bold text-danger">{{ today_calories }}</span> <small class="text-muted">kcal</small>
+            </div>
+          </div>
+          <div class="progress mb-4"
+            style="height: 12px; border-radius: 6px; background: rgba(0,0,0,0.05); --cal-pct: {{ (today_calories / 2500 * 100) }}%;">
+            <div class="progress-bar bg-danger" style="width: var(--cal-pct);"></div>
+          </div>
+          <div class="d-flex justify-content-between small text-muted">
+            <span>Consumed: {{ today_calories }} kcal</span>
+            <span>Est. Goal: 2,500 kcal</span>
+          </div>
+          <a href="/nutrition" class="btn btn-sm btn-outline-danger rounded-pill w-fit mt-3"
+            style="width: fit-content;">Log Today's Meals</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Predictive Insights & Social Challenges -->
+<section class="predictive-social mb-5">
+  <div class="container-fluid">
+    <div class="row g-4">
+      <!-- Predictive Health -->
+      <div class="col-lg-7">
+        <div class="card p-4 h-100" style="border: 1px solid var(--pastel-blue); background: #fdfcff;">
+          <div class="d-flex align-items-center mb-4">
+            <div class="me-3 p-3 rounded-circle bg-light text-primary"><i class="fas fa-crystal-ball fa-lg"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-1">AI Health Forecast</h5>
+              <p class="text-muted small mb-0">Based on your last 14 days of behavioral data</p>
+            </div>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="p-3 bg-white border" style="border-radius: 16px;">
+                <div class="small fw-bold text-muted mb-2"><i class="fas fa-moon me-1 text-info"></i> REST DEBT
+                </div>
+                <div class="h5 fw-bold mb-1">+1.5 Hours</div>
+                <p class="extra-small text-muted mb-0">Cumulative fatigue detected. Aim for an earlier night
+                  tomorrow.
+                </p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3 bg-white border" style="border-radius: 16px;">
+                <div class="small fw-bold text-muted mb-2"><i class="fas fa-bolt me-1 text-warning"></i> PEAK
+                  PERFORMANCE</div>
+                <div class="h5 fw-bold mb-1">Coming Tuesday</div>
+                <p class="extra-small text-muted mb-0">Your energy cycles suggest a peak on Tuesday morning.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Challenges -->
+      <div class="col-lg-5">
+        <div class="card p-4 h-100">
+          <h5 class="fw-bold mb-4"><i class="fas fa-trophy text-warning me-2"></i> Community Challenges</h5>
+          <div class="challenge-item p-3 mb-3 bg-light" style="border-radius: 16px;">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="fw-bold small">Weekend Warrior Steps</span>
+              <span class="badge bg-primary px-2">Active</span>
+            </div>
+            <div class="progress mb-2" style="height: 6px;">
+              <div class="progress-bar" style="width: 65%;"></div>
+            </div>
+            <div class="d-flex justify-content-between extra-small text-muted">
+              <span>Keep going! You're in 12th place.</span>
+              <span>6.5k / 10k</span>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-soft-primary w-100 rounded-pill">View All Challenges</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Advanced Health Overview -->
+<section class="advanced-insights mb-5">
+  <div class="container-fluid">
+    <div class="row g-4">
+      <div class="col-lg-12">
+        <div class="card p-4 overflow-hidden" style="border: 2px solid var(--pastel-blue);">
+          <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+              <h5 class="fw-bold mb-1">Advanced Recovery Analysis</h5>
+              <p class="text-muted small mb-0">Correlating your physiological markers with your behavior</p>
+            </div>
+            <div id="advancedBadge" class="badge bg-soft-primary px-3 py-2"
+              style="border-radius: 20px; color: var(--primary); background: var(--pastel-blue);">
+              <i class="fas fa-microscope me-1"></i> Data-Science Mode
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="p-3 bg-light" style="border-radius: 16px;">
+                <div class="small fw-bold text-muted mb-2 text-uppercase" style="letter-spacing: 1px;">HRV vs Sleep
+                </div>
+                <div class="d-flex align-items-baseline gap-2">
+                  <h4 class="fw-bold mb-0 text-primary">+12%</h4>
+                  <span class="small text-success fw-bold"><i class="fas fa-arrow-up"></i> Recovery</span>
+                </div>
+                <p class="small text-muted mt-2 mb-0">Your recovery peaks when sleep exceeds 7.5 hours. Sync data
+                  suggests high parasympathetic activity.</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 bg-light" style="border-radius: 16px;">
+                <div class="small fw-bold text-muted mb-2 text-uppercase" style="letter-spacing: 1px;">VO2 Max Trend
+                </div>
+                <div class="d-flex align-items-baseline gap-2">
+                  <h4 class="fw-bold mb-0 text-secondary">Steady</h4>
+                  <span class="small text-muted fw-bold">Maintain</span>
+                </div>
+                <p class="small text-muted mt-2 mb-0">Cardiovascular efficiency is stable. To improve, try adding
+                  one
+                  High Intensity session per week.</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 bg-light" style="border-radius: 16px;">
+                <div class="small fw-bold text-muted mb-2 text-uppercase" style="letter-spacing: 1px;">Burnout
+                  Indicator
+                </div>
+                <div class="d-flex align-items-baseline gap-2">
+                  <h4 class="fw-bold mb-0 text-success">Low Risk</h4>
+                  <span class="small text-muted">🛡️ Safe</span>
+                </div>
+                <p class="small text-muted mt-2 mb-0">Stress distribution and energy levels show strong resilience.
+                  Momentum is high.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Habits & Streaks -->
+<section class="habits-section mb-5">
+  <div class="container-fluid">
+    <div class="card p-4">
+      <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+          <h5 class="fw-bold mb-1">Consistency Tracker</h5>
+          <p class="text-muted small mb-0">Celebrate your small wins every day</p>
+        </div>
+        <div class="text-end">
+          <span class="badge bg-primary px-3 py-2" style="border-radius: 12px;">{{ current_streak }} Day Streak
+            🔥</span>
+        </div>
+      </div>
+      <div class="d-flex gap-3 overflow-auto pb-2">
+        {% for i in range(14) %}
+        <div class="text-center" style="min-width: 60px;">
+          <div class="streak-circle {% if i < current_streak %}active{% endif %}"
+            style="width: 40px; height: 40px; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center;">
+            {% if i < current_streak %} <i class="fas fa-check text-white" style="font-size: 0.8rem;"></i>
+              {% endif %}
+          </div>
+          <span class="small text-muted">Day {{ i + 1 }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      <p class="small text-center mt-3 mb-0">"Small steps everyday lead to big results." — We're proud of you!</p>
+    </div>
+  </div>
+</section>
+
+<!-- Analytics & Leaderboard Row -->
+<section class="leaderboard-analytics mb-5">
+  <div class="container-fluid">
+    <div class="row g-4">
+      <!-- Leaderboard -->
+      <div class="col-lg-4">
+        <div class="card p-4 h-100">
+          <h5 class="fw-bold mb-4">Friendly Competition</h5>
+          <div class="leaderboard-list">
+            {% for user in leaderboard_data[:5] %}
+            <div
+              class="user-leaderboard-entry d-flex align-items-center mb-3 p-2 {% if current_user and user.user_id == current_user.user_id %}current-user-bg{% endif %}"
+              style="border-radius: 16px;">
+              <div class="rank-badge me-3"
+                style="width: 32px; height: 32px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                {{ loop.index }}
+              </div>
+              <div class="flex-grow-1">
+                <div class="fw-bold small">{{ user.name }}</div>
+                <div class="text-muted" style="font-size: 0.7rem;">Level {{ user.level }} • {{
+                  user.experience_points }}
+                  XP</div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <a href="/profile" class="btn btn-link btn-sm text-center text-decoration-none mt-auto">View Full
+            Leaderboard</a>
+        </div>
+      </div>
+
+      <!-- Schedule & Goals -->
+      <div class="col-lg-8">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="card p-4 h-100">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0">Daily Checklist</h5>
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#addTaskForm"
+                  style="border-radius: 12px;">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+              <div class="collapse mb-3" id="addTaskForm">
+                <div class="p-3 bg-light" style="border-radius: 20px;">
+                  <form id="taskForm">
+                    <div class="row g-2">
+                      <div class="col-12">
+                        <input type="text" class="form-control" id="taskName" placeholder="Focus for today?" required>
+                      </div>
+                      <div class="col-12 d-flex gap-2">
+                        <input type="time" class="form-control" id="taskTime" required>
+                        <button type="submit" class="btn btn-primary w-100">Add</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="schedule-timeline" id="scheduleTimeline">
+                <!-- Tasks will be injected here -->
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card p-4 h-100">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0">Commitments</h5>
+                <a href="/goals" class="small text-decoration-none">View All</a>
+              </div>
+              <div class="personal-goals-preview">
+                {% for goal in user_goals[:3] %}
+                <div class="p-3 mb-2 bg-light" style="border-radius: 16px;">
+                  <div class="d-flex justify-content-between mb-1">
+                    <span class="extra-small fw-bold text-primary">{{ goal.category }}</span>
+                    <span class="extra-small text-muted">{{ goal.progress }}%</span>
+                  </div>
+                  <div class="fw-bold small">{{ goal.title }}</div>
+                  <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar" style="width: {{ goal.progress }}%"></div>
+                  </div>
+                </div>
+                {% else %}
+                <div class="text-center py-4 text-muted">
+                  <p class="small">No active commitments.</p>
+                  <a href="/goals" class="btn btn-sm btn-soft-primary rounded-pill">Define Goals</a>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Visual Insights & Explanations -->
+<section class="charts-row mb-5 pb-5">
+  <div class="container-fluid">
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card p-4 h-100">
+          <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+              <h5 class="fw-bold mb-1">Sleep Pattern</h5>
+              <button class="btn btn-link btn-sm text-decoration-none p-0 text-muted" style="font-size: 0.75rem;"
+                onclick="alert('This shows your restful hours. We recommend 7-9 hours for optimal recovery!')">
+                What does this mean?
+              </button>
+            </div>
+          </div>
+          <div style="position: relative; height: 250px;">
+            <canvas id="sleepChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="card p-4 h-100">
+          <h5 class="fw-bold mb-3">Balance</h5>
+          <div style="position: relative; height: 180px;">
+            <canvas id="stressChart"></canvas>
+          </div>
+          <button class="btn btn-link btn-sm text-decoration-none p-0 text-muted mt-3" style="font-size: 0.75rem;"
+            onclick="alert('This is your mental load. More green means your mind is relaxed!')">
+            Stress details?
+          </button>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="card p-4 h-100">
+          <h5 class="fw-bold mb-3">Vibrancy</h5>
+          <div style="position: relative; height: 180px;">
+            <canvas id="energyChart"></canvas>
+          </div>
+          <button class="btn btn-link btn-sm text-decoration-none p-0 text-muted mt-3" style="font-size: 0.75rem;"
+            onclick="alert('Your energy levels throughout the week. Higher peaks mean more fuel for activities!')">
+            Energy details?
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Wellness UI Helpers
+  function toast(msg) {
+    const alertBox = document.createElement('div');
+    alertBox.className = 'wellness-toast';
+    alertBox.style.position = 'fixed';
+    alertBox.style.bottom = '20px';
+    alertBox.style.right = '20px';
+    alertBox.style.background = 'var(--primary)';
+    alertBox.style.color = 'white';
+    alertBox.style.padding = '12px 24px';
+    alertBox.style.borderRadius = '16px';
+    alertBox.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+    alertBox.style.zIndex = '9999';
+    alertBox.style.fontWeight = '600';
+    alertBox.innerText = msg;
+    document.body.appendChild(alertBox);
+    setTimeout(() => {
+      alertBox.style.opacity = '0';
+      alertBox.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => alertBox.remove(), 500);
+    }, 3000);
+  }
+
+  async function syncFitnessData() {
+    const btn = document.getElementById('syncBtn');
+    const icon = document.getElementById('syncIcon');
+    const pulse = document.getElementById('syncPulse');
+    const statusText = document.getElementById('syncStatusText');
+    const lastSync = document.getElementById('lastSyncTime');
+
+    // Start animation
+    icon.classList.add('fa-spin');
+    btn.disabled = true;
+    statusText.innerText = "Syncing with HealthConnect...";
+    pulse.style.background = "#fbbf24"; // yellow during sync
+
+    try {
+      const response = await fetch('/api/sync-fitness', { method: 'POST' });
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        const d = result.data;
+        // Update DOM metrics
+        document.getElementById('statSteps').innerText = d.steps.toLocaleString();
+        document.getElementById('statHRV').innerHTML = `${d.hrv} <small style="font-size: 0.9rem;">ms</small>`;
+        document.getElementById('statVO2').innerText = d.vo2max;
+
+        lastSync.innerText = `Last synced: ${d.last_sync}`;
+        toast("Sync complete! Your metrics have been updated. 📱");
+      }
+    } catch (err) {
+      toast("Sync failed. Please check your connection.");
+      console.error(err);
+    } finally {
+      icon.classList.remove('fa-spin');
+      btn.disabled = false;
+      statusText.innerText = "Smartphone Sync: Connected";
+      pulse.style.background = "#10b981"; // back to green
+    }
+  }
+
+  document.querySelectorAll('.mood-btn').forEach(btn => {
+    btn.addEventListener('click', async function () {
+      const mood = this.getAttribute('title');
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      this.classList.add('selected');
+
+      try {
+        const response = await fetch('/api/log-mood', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mood: mood })
+        });
+        const result = await response.json();
+        if (result.success) {
+          toast("Mood recorded! Recommendations updated. ✨");
+        }
+      } catch (err) {
+        console.error(err);
+        toast("Could not save mood.");
+      }
+    });
+  });
+
+  // Schedule Tasks Management
+  function getTodayKey() {
+    const today = new Date().toISOString().split('T')[0];
+    return 'schedule_tasks_' + today;
+  }
+
+  function loadTasks() {
+    const tasks = JSON.parse(localStorage.getItem(getTodayKey()) || '[]');
+    const timeline = document.getElementById('scheduleTimeline');
+    const noTasksMsg = document.getElementById('noTasksMsg');
+
+    if (tasks.length === 0) {
+      timeline.innerHTML = '<div class="text-center text-muted py-3" id="noTasksMsg"><p class="small mb-0">No goals set yet. Let\'s plan something!</p></div>';
+      return;
+    }
+
+    if (noTasksMsg) noTasksMsg.remove();
+    timeline.innerHTML = '';
+
+    tasks.sort((a, b) => a.time.localeCompare(b.time)).forEach((task, index) => {
+      const item = document.createElement('div');
+      item.className = 'd-flex align-items-center mb-3 p-3 bg-light';
+      item.style.borderRadius = '16px';
+      item.innerHTML = `
+        <div class="fw-bold text-primary me-3" style="min-width: 65px;">${formatTime(task.time)}</div>
+        <div class="flex-grow-1 fw-medium">${task.name}</div>
+        <button class="btn btn-sm btn-link text-danger p-0" onclick="deleteTask('${task.id}')">
+          <i class="fas fa-trash"></i>
+        </button>
+      `;
+      timeline.appendChild(item);
+    });
+  }
+
+  function formatTime(timeStr) {
+    const [h, m] = timeStr.split(':');
+    const hour = parseInt(h);
+    return `${hour % 12 || 12}:${m} ${hour >= 12 ? 'pm' : 'am'}`;
+  }
+
+  function deleteTask(id) {
+    const tasks = JSON.parse(localStorage.getItem(getTodayKey()) || '[]');
+    localStorage.setItem(getTodayKey(), JSON.stringify(tasks.filter(t => t.id !== id)));
+    loadTasks();
+  }
+
+  document.getElementById('taskForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const name = document.getElementById('taskName').value;
+    const time = document.getElementById('taskTime').value;
+    const tasks = JSON.parse(localStorage.getItem(getTodayKey()) || '[]');
+    tasks.push({ id: Date.now().toString(), name, time });
+    localStorage.setItem(getTodayKey(), JSON.stringify(tasks));
+    this.reset();
+    bootstrap.Collapse.getInstance(document.getElementById('addTaskForm')).hide();
+    loadTasks();
+  });
+
+  // Charts
+  const sleepLabels = {{ sleep_labels | tojson }};
+  const sleepSeries = {{ sleep_series | tojson }};
+  const stressCounts = {{ stress_counts | tojson }};
+  const energyCounts = {{ energy_counts | tojson }};
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadTasks();
+
+    // Sleep Chart
+    new Chart(document.getElementById('sleepChart'), {
+      type: 'line',
+      data: {
+        labels: sleepLabels,
+        datasets: [{
+          label: 'Sleep Hours',
+          data: sleepSeries,
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          fill: true,
+          tension: 0.4,
+          borderWidth: 3,
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, grid: { display: false } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // Stress Chart
+    new Chart(document.getElementById('stressChart'), {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(stressCounts),
+        datasets: [{
+          data: Object.values(stressCounts),
+          backgroundColor: ['#10b981', '#fbbf24', '#f87171'],
+          borderWidth: 0,
+          hoverOffset: 15
+        }]
+      },
+      options: { cutout: '75%', plugins: { legend: { display: false } } }
+    });
+
+    // HR Sparkline
+    const hrChart = new Chart(document.getElementById('hrSparkline'), {
+      type: 'line',
+      data: {
+        labels: Array.from({ length: 12 }, (_, i) => i),
+        datasets: [{
+          data: [68, 70, 72, 75, 71, 69, 72, 74, 72, 72, 70, 68],
+          borderColor: '#f87171',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: true,
+          backgroundColor: 'rgba(248, 113, 113, 0.05)',
+          tension: 0.4
+        }]
+      },
+      options: {
+        animation: { duration: 1000 },
+        plugins: { legend: { display: false } },
+        scales: { x: { display: false }, y: { display: false } }
+      }
+    });
+
+    // Real-time HR simulation
+    setInterval(() => {
+      const newData = hrChart.data.datasets[0].data;
+      newData.shift();
+      const lastVal = newData[newData.length - 1];
+      const nextVal = Math.max(60, Math.min(100, lastVal + (Math.random() * 4 - 2)));
+      newData.push(nextVal);
+      hrChart.update('none');
+
+      // Update the heart BPM text for realism
+      const bpmEl = document.querySelector('.fa-heartbeat + .fw-bold');
+      if (bpmEl) bpmEl.innerHTML = `${Math.round(nextVal)} <small style="font-size: 0.6rem;">bpm</small>`;
+    }, 3000);
+
+    // Weight Sparkline
+    new Chart(document.getElementById('weightSparkline'), {
+      type: 'line',
+      data: {
+        labels: [1, 2, 3, 4, 5, 6, 7],
+        datasets: [{
+          data: [79.2, 79.1, 79.0, 78.8, 78.9, 78.5, 78.0],
+          borderColor: 'var(--primary)',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: true,
+          backgroundColor: 'rgba(99, 102, 241, 0.05)',
+          tension: 0.4
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: { x: { display: false }, y: { display: false } }
+      }
+    });
+  });
+</script>
+
+<!-- Community & Social Engagement -->
+<section class="community-social mb-5">
+  <div class="container-fluid">
+    <div class="row g-4">
+      <div class="col-lg-12">
+        <div class="card p-4 border-0 shadow-sm"
+          style="border-radius: 30px; background: linear-gradient(145deg, #ffffff, #f8fafc);">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h5 class="fw-bold mb-1"><i class="fas fa-users text-primary me-2"></i> Community Pulse</h5>
+              <p class="text-muted extra-small mb-0">Live activity from the Alivea community</p>
+            </div>
+            <div class="badge bg-soft-success text-success px-3 py-2" style="border-radius: 20px;">
+              <i class="fas fa-bullseye me-1"></i> Global Goal: 1M Steps Today (82% reached)
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="social-item d-flex align-items-center p-3 border transition-hover"
+                style="border-radius: 24px; border-color: rgba(0,0,0,0.05) !important;">
+                <div class="avatar me-3 bg-pastel-lavender p-1 rounded-circle border"
+                  style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                  👩‍🚀</div>
+                <div class="flex-grow-1">
+                  <div class="fw-bold extra-small">Alex J.</div>
+                  <div class="text-muted" style="font-size: 0.65rem;">Just finished a 5km run! 🏃‍♂️</div>
+                </div>
+                <button class="btn btn-sm btn-soft-primary rounded-circle p-0" style="width: 32px; height: 32px;"
+                  onclick="toast('Alex received your clap! 👏')">👏</button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="social-item d-flex align-items-center p-3 border transition-hover"
+                style="border-radius: 24px; border-color: rgba(0,0,0,0.05) !important;">
+                <div class="avatar me-3 bg-pastel-mint p-1 rounded-circle border"
+                  style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                  🧘</div>
+                <div class="flex-grow-1">
+                  <div class="fw-bold extra-small">Sarah K.</div>
+                  <div class="text-muted" style="font-size: 0.65rem;">Completed 7-day Zen streak! 🧘‍♀️</div>
+                </div>
+                <button class="btn btn-sm btn-soft-primary rounded-circle p-0" style="width: 32px; height: 32px;"
+                  onclick="toast('Sarah is feeling the fire! 🔥')">🔥</button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="social-item d-flex align-items-center p-3 border transition-hover"
+                style="border-radius: 24px; border-color: rgba(0,0,0,0.05) !important;">
+                <div class="avatar me-3 bg-pastel-peach p-1 rounded-circle border"
+                  style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                  🚴</div>
+                <div class="flex-grow-1">
+                  <div class="fw-bold extra-small">Mike R.</div>
+                  <div class="text-muted" style="font-size: 0.65rem;">Crushed a HIIT session. ⚡</div>
+                </div>
+                <button class="btn btn-sm btn-soft-primary rounded-circle p-0" style="width: 32px; height: 32px;"
+                  onclick="toast('Mike got your support! 💪')">💪</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .extra-small {
+    font-size: 0.7rem;
+  }
+
+  .bg-soft-primary {
+    background: var(--pastel-blue);
+  }
+
+  .dynamic-stroke {
+    transition: stroke-dashoffset 1s ease-out;
+    stroke-dashoffset: calc(377 - (var(--wellness-offset) * 1px));
+  }
+
+  .w-fit {
+    width: fit-content;
+  }
+
+  .alert-warning {
+    background: var(--pastel-peach);
+  }
+
+  .alert-info {
+    background: var(--pastel-blue);
+  }
+
+  .water-glass {
+    background: #e2e8f0;
+    transition: background 0.3s;
+  }
+
+  .water-glass.filled {
+    background: var(--primary);
+  }
+
+  .current-user-bg {
+    background: var(--pastel-blue) !important;
+  }
+
+  .streak-circle {
+    background: var(--bg-light);
+  }
+
+  .streak-circle.active {
+    background: var(--primary);
+  }
+
+  .rounded-20 {
+    border-radius: 20px !important;
+  }
+
+  .min-w-65 {
+    min-width: 65px;
+  }
+
+  .transition-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+
+  .transition-hover:hover {
+    transform: translateX(8px);
+    background-color: #f8fbff;
+    border-color: var(--primary) !important;
+  }
+
+  .bg-pastel-mint {
+    background: #ecfdf5;
+    color: #059669;
+  }
+
+  .bg-pastel-blue {
+    background: #eff6ff;
+    color: #2563eb;
+  }
+
+  .bg-pastel-peach {
+    background: #fff7ed;
+    color: #ea580c;
+  }
+
+  .bg-soft-success {
+    background: #f0fdf4;
+    color: #15803d;
+  }
+</style>
+
+{% endblock %} ```

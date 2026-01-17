@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section class="wearables-page py-4">
+    <div class="container-fluid">
+        <div class="row mb-5">
+            <div class="col-lg-8">
+                <h1 class="h3 fw-bold mb-1">Wearable Hub</h1>
+                <p class="text-muted">Connect your devices for autonomous, 24/7 health tracking</p>
+            </div>
+            <div class="col-lg-4 text-end">
+                <div class="badge bg-success-subtle text-success px-4 py-3 rounded-pill" style="font-size: 0.9rem;">
+                    <i class="fas fa-check-circle me-2"></i> System Status: Online
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <!-- Device Cards -->
+            <div class="col-md-6 col-lg-4 col-xl">
+                <div class="card p-4 text-center h-100 device-card connected">
+                    <div class="device-icon mb-3 mx-auto shadow-sm"><i class="fab fa-apple"></i></div>
+                    <h6 class="fw-bold mb-1">Apple Health</h6>
+                    <p class="extra-small text-muted mb-3">Syncs Steps, Sleep, HRV</p>
+                    <span class="badge bg-success rounded-pill px-3 py-1">Connected</span>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 col-xl">
+                <div class="card p-4 text-center h-100 device-card">
+                    <div class="device-icon mb-3 mx-auto shadow-sm text-secondary"><i class="fas fa-watch"></i></div>
+                    <h6 class="fw-bold mb-1">Garmin Connect</h6>
+                    <p class="extra-small text-muted mb-3">Professional Grade Data</p>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill px-4"
+                        onclick="toast('Attempting to pair with Garmin... 📡')">Connect</button>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 col-xl">
+                <div class="card p-4 text-center h-100 device-card">
+                    <div class="device-icon mb-3 mx-auto shadow-sm text-info"><i class="fas fa-running"></i></div>
+                    <h6 class="fw-bold mb-1">Fitbit</h6>
+                    <p class="extra-small text-muted mb-3">Activity & Heart Rate</p>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill px-4"
+                        onclick="toast('Fitbit login required...')">Connect</button>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 col-xl">
+                <div class="card p-4 text-center h-100 device-card">
+                    <div class="device-icon mb-3 mx-auto shadow-sm text-primary"><i class="fas fa-watch"></i></div>
+                    <h6 class="fw-bold mb-1">Samsung Health</h6>
+                    <p class="extra-small text-muted mb-3">Galaxy Watch Performance</p>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill px-4"
+                        onclick="toast('Connecting to Galaxy Watch... ⌚')">Connect</button>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 col-xl">
+                <div class="card p-4 text-center h-100 device-card">
+                    <div class="device-icon mb-3 mx-auto shadow-sm text-warning"><i class="fas fa-circle-notch"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1">Oura Ring</h6>
+                    <p class="extra-small text-muted mb-3">Precision Sleep Analysis</p>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill px-4"
+                        onclick="toast('Pairing with Oura Cloud...')">Connect</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Data Stream Simulation -->
+        <div class="card p-0 overflow-hidden border-0 shadow-sm" style="border-radius: 28px;">
+            <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0">Live Wearable Stream</h5>
+                <div class="text-success small fw-bold live-pulse">
+                    <i class="fas fa-circle me-1" style="font-size: 0.6rem;"></i> Receiving Data
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-borderless align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 py-3 small text-muted">Metric</th>
+                                <th class="py-3 small text-muted">Current Value</th>
+                                <th class="py-3 small text-muted">Stability</th>
+                                <th class="py-3 small text-muted">Last Update</th>
+                            </tr>
+                        </thead>
+                        <tbody id="liveDataStream">
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-heartbeat text-danger me-3"></i>
+                                        <span class="fw-bold small">Heart Rate</span>
+                                    </div>
+                                </td>
+                                <td><span class="h6 mb-0 fw-bold">72</span> <small class="text-muted">bpm</small></td>
+                                <td><span class="badge bg-success-subtle text-success">Optimal</span></td>
+                                <td><small class="text-muted">2s ago</small></td>
+                            </tr>
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-bolt text-warning me-3"></i>
+                                        <span class="fw-bold small">Body Battery</span>
+                                    </div>
+                                </td>
+                                <td><span class="h6 mb-0 fw-bold">88</span> <small class="text-muted">%</small></td>
+                                <td><span class="badge bg-info-subtle text-info">High Energy</span></td>
+                                <td><small class="text-muted">1m ago</small></td>
+                            </tr>
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-lungs text-info me-3"></i>
+                                        <span class="fw-bold small">Respiration Rate</span>
+                                    </div>
+                                </td>
+                                <td><span class="h6 mb-0 fw-bold">14</span> <small class="text-muted">brpm</small></td>
+                                <td><span class="badge bg-success-subtle text-success">Steady</span></td>
+                                <td><small class="text-muted">5s ago</small></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .device-icon {
+        width: 60px;
+        height: 60px;
+        background: #f8fafc;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .device-card.connected {
+        border: 2px solid var(--primary);
+        background: #f0f7ff;
+    }
+
+    .extra-small {
+        font-size: 0.75rem;
+    }
+
+    .live-pulse i {
+        animation: opacityPulse 1.5s infinite;
+    }
+
+    @keyframes opacityPulse {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.3;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+</style>
+
+<script>
+    function toast(msg) {
+        const alertBox = document.createElement('div');
+        alertBox.style.position = 'fixed';
+        alertBox.style.bottom = '20px';
+        alertBox.style.right = '20px';
+        alertBox.style.background = 'var(--primary)';
+        alertBox.style.color = 'white';
+        alertBox.style.padding = '12px 24px';
+        alertBox.style.borderRadius = '16px';
+        alertBox.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+        alertBox.style.zIndex = '9999';
+        alertBox.style.fontWeight = '600';
+        alertBox.innerText = msg;
+        document.body.appendChild(alertBox);
+        setTimeout(() => {
+            alertBox.style.opacity = '0';
+            alertBox.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => alertBox.remove(), 500);
+        }, 3000);
+    }
+</script>
+
+{% endblock %}

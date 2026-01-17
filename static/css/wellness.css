@@ -1,0 +1,10 @@
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+form {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+}

@@ -1,0 +1,559 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- Main Analytics Section -->
+<section class="main-analytics mb-4">
+  <div class="container-fluid">
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div>
+            <h2 class="fw-bold mb-1" style="color: #1a202c;">Your Analytics</h2>
+            <p class="text-muted mb-0">Comprehensive overview of your fitness journey</p>
+          </div>
+          {% if current_user %}
+          <div class="d-flex align-items-center gap-3">
+            <div class="text-end">
+              <div class="small text-muted">Current Level</div>
+              <div class="fw-bold" style="font-size: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Level {{ current_user.level }}</div>
+            </div>
+            <div class="text-end">
+              <div class="small text-muted">Experience Points</div>
+              <div class="fw-bold" style="font-size: 1.5rem; color: #10b981;">{{ current_user.experience_points }} XP</div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <div class="row g-4 mb-4">
+      <!-- Overall Stats -->
+      <div class="col-lg-3 col-md-6">
+        <div class="analytics-card h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 2rem; color: white; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+              <div class="small mb-1" style="opacity: 0.9;">Total Workouts</div>
+              <h2 class="fw-bold mb-0">{{ total_workouts }}</h2>
+            </div>
+            <div style="width: 60px; height: 60px; background: rgba(255, 255, 255, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-dumbbell" style="font-size: 1.75rem;"></i>
+            </div>
+          </div>
+          <div class="small" style="opacity: 0.8;">
+            <i class="fas fa-chart-line me-1"></i>{{ month_workouts }} this month
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-3 col-md-6">
+        <div class="analytics-card h-100" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 16px; padding: 2rem; color: white; box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+              <div class="small mb-1" style="opacity: 0.9;">Consistency</div>
+              <h2 class="fw-bold mb-0">{{ "%.0f"|format(consistency_rate) }}%</h2>
+            </div>
+            <div style="width: 60px; height: 60px; background: rgba(255, 255, 255, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-check-circle" style="font-size: 1.75rem;"></i>
+            </div>
+          </div>
+          <div class="small" style="opacity: 0.8;">
+            <i class="fas fa-fire me-1"></i>{{ current_streak }} day streak
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-3 col-md-6">
+        <div class="analytics-card h-100" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 16px; padding: 2rem; color: white; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+              <div class="small mb-1" style="opacity: 0.9;">Avg Sleep</div>
+              <h2 class="fw-bold mb-0">{{ "%.1f"|format(overall_avg_sleep) if overall_avg_sleep else 'N/A' }}<small style="font-size: 1rem; opacity: 0.8;">h</small></h2>
+            </div>
+            <div style="width: 60px; height: 60px; background: rgba(255, 255, 255, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-bed" style="font-size: 1.75rem;"></i>
+            </div>
+          </div>
+          <div class="small" style="opacity: 0.8;">
+            <i class="fas fa-calendar-week me-1"></i>{{ "%.1f"|format(week_avg_sleep) if week_avg_sleep else 'N/A' }}h this week
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-3 col-md-6">
+        <div class="analytics-card h-100" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 16px; padding: 2rem; color: white; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+              <div class="small mb-1" style="opacity: 0.9;">This Week</div>
+              <h2 class="fw-bold mb-0">{{ week_workouts }}</h2>
+            </div>
+            <div style="width: 60px; height: 60px; background: rgba(255, 255, 255, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-calendar-alt" style="font-size: 1.75rem;"></i>
+            </div>
+          </div>
+          <div class="small" style="opacity: 0.8;">
+            <i class="fas fa-trophy me-1"></i>Workouts completed
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Detailed Analytics Row -->
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="card p-4 h-100" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+          <h5 class="fw-bold mb-4"><i class="fas fa-chart-pie me-2" style="color: #667eea;"></i>Activity Summary</h5>
+          <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="fw-bold">Total Check-ins</span>
+              <span class="badge bg-primary" style="padding: 0.5rem 1rem; border-radius: 8px;">{{ total_logs }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="fw-bold">Workouts Completed</span>
+              <span class="badge bg-success" style="padding: 0.5rem 1rem; border-radius: 8px;">{{ total_workouts }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="fw-bold">Missed Workouts</span>
+              <span class="badge bg-danger" style="padding: 0.5rem 1rem; border-radius: 8px;">{{ total_missed }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="fw-bold">Current Streak</span>
+              <span class="badge" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 0.5rem 1rem; border-radius: 8px;">{{ current_streak }} days</span>
+            </div>
+          </div>
+          <div class="progress" style="height: 12px; border-radius: 10px; background: #f3f4f6;">
+            <div class="progress-bar" style="background: linear-gradient(90deg, #10b981 0%, #059669 100%); width: {{ consistency_rate }}%; border-radius: 10px;" role="progressbar"></div>
+          </div>
+          <div class="text-center mt-2">
+            <small class="text-muted">Consistency Rate: {{ "%.1f"|format(consistency_rate) }}%</small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="card p-4 h-100" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+          <h5 class="fw-bold mb-4"><i class="fas fa-calendar-check me-2" style="color: #3b82f6;"></i>Weekly Performance</h5>
+          <div class="text-center mb-4">
+            <div style="width: 120px; height: 120px; margin: 0 auto; position: relative;">
+              <svg width="120" height="120" style="transform: rotate(-90deg);">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#f3f4f6" stroke-width="10"></circle>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="url(#weeklyGradient)" stroke-width="10" 
+                        stroke-dasharray="{{ (week_workouts / 7 * 314) if week_workouts else 0 }} 314" 
+                        stroke-linecap="round"></circle>
+                <defs>
+                  <linearGradient id="weeklyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                <div class="fw-bold" style="font-size: 1.5rem; color: #3b82f6;">{{ week_workouts }}</div>
+                <div class="small text-muted">/ 7 days</div>
+              </div>
+            </div>
+          </div>
+          <div class="row text-center">
+            <div class="col-6">
+              <div class="small text-muted mb-1">This Week</div>
+              <div class="fw-bold">{{ week_workouts }} workouts</div>
+            </div>
+            <div class="col-6">
+              <div class="small text-muted mb-1">This Month</div>
+              <div class="fw-bold">{{ month_workouts }} workouts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="card p-4 h-100" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+          <h5 class="fw-bold mb-4"><i class="fas fa-trophy me-2" style="color: #f59e0b;"></i>Achievements</h5>
+          <div class="achievement-list">
+            {% if current_streak >= 7 %}
+            <div class="achievement-item d-flex align-items-center mb-3 p-3" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px;">
+              <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                <i class="fas fa-fire text-white"></i>
+              </div>
+              <div>
+                <div class="fw-bold">7-Day Streak!</div>
+                <small class="text-muted">Keep the momentum going</small>
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if total_workouts >= 30 %}
+            <div class="achievement-item d-flex align-items-center mb-3 p-3" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px;">
+              <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                <i class="fas fa-medal text-white"></i>
+              </div>
+              <div>
+                <div class="fw-bold">30 Workouts Milestone!</div>
+                <small class="text-muted">Excellent progress</small>
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if consistency_rate >= 80 %}
+            <div class="achievement-item d-flex align-items-center mb-3 p-3" style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-radius: 12px;">
+              <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                <i class="fas fa-star text-white"></i>
+              </div>
+              <div>
+                <div class="fw-bold">Consistency Champion!</div>
+                <small class="text-muted">{{ "%.0f"|format(consistency_rate) }}% consistency rate</small>
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if current_streak < 7 and total_workouts < 30 and consistency_rate < 80 %}
+            <div class="text-center text-muted py-4">
+              <i class="fas fa-flag-checkered mb-2" style="font-size: 2rem; opacity: 0.3;"></i>
+              <p class="small mb-0">Keep checking in to unlock achievements!</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Charts Row -->
+<section class="charts-row mb-4">
+  <div class="container-fluid">
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card p-4 chart-card" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);">
+          <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+              <h5 class="fw-bold mb-1" style="color: #1a202c;">Sleep Over Time</h5>
+              <p class="text-muted small mb-0">Track your sleep patterns</p>
+            </div>
+            <div class="chart-icon" style="width: 48px; height: 48px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-bed text-white"></i>
+            </div>
+          </div>
+          <div style="position: relative; height: 250px;">
+            <canvas id="sleepChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="card p-4 chart-card" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);">
+          <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+              <h5 class="fw-bold mb-1" style="color: #1a202c;">Stress Distribution</h5>
+              <p class="text-muted small mb-0">Your stress levels</p>
+            </div>
+            <div class="chart-icon" style="width: 48px; height: 48px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-brain text-white"></i>
+            </div>
+          </div>
+          <div style="position: relative; height: 250px;">
+            <canvas id="stressChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="card p-4 chart-card" style="border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);">
+          <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+              <h5 class="fw-bold mb-1" style="color: #1a202c;">Energy Distribution</h5>
+              <p class="text-muted small mb-0">Your energy levels</p>
+            </div>
+            <div class="chart-icon" style="width: 48px; height: 48px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-bolt text-white"></i>
+            </div>
+          </div>
+          <div style="position: relative; height: 250px;">
+            <canvas id="energyChart"></canvas>
+    </div>
+  </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Chart data from backend
+  const sleepSeries = {{ sleep_series | tojson }};
+  const sleepLabels = {{ sleep_labels | tojson }};
+  const stressCounts = {{ stress_counts | tojson }};
+  const energyCounts = {{ energy_counts | tojson }};
+
+  // Sleep over time - Enhanced
+  const ctxSleep = document.getElementById('sleepChart').getContext('2d');
+  new Chart(ctxSleep, {
+    type: 'line',
+    data: { 
+      labels: sleepLabels.length > 0 ? sleepLabels : ['No data'], 
+      datasets: [{ 
+        label: 'Sleep Hours',
+        data: sleepSeries.length > 0 ? sleepSeries : [0],
+        borderColor: '#3b82f6',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        pointBackgroundColor: '#3b82f6',
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
+        pointHoverBackgroundColor: '#2563eb',
+        pointHoverBorderColor: '#ffffff',
+        pointHoverBorderWidth: 3
+      }] 
+    },
+    options: { 
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { 
+          display: true,
+          position: 'top',
+          labels: {
+            usePointStyle: true,
+            padding: 15,
+            font: {
+              size: 12,
+              weight: '600',
+              family: "'Segoe UI', Roboto, sans-serif"
+            },
+            color: '#4a5568'
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          titleFont: {
+            size: 14,
+            weight: '600'
+          },
+          bodyFont: {
+            size: 13
+          },
+          borderColor: '#3b82f6',
+          borderWidth: 1,
+          cornerRadius: 8,
+          displayColors: false,
+          callbacks: {
+            label: function(context) {
+              return 'Sleep: ' + context.parsed.y + ' hours';
+            }
+          }
+        }
+      },
+      scales: {
+        y: { 
+          beginAtZero: true,
+          max: 12,
+          ticks: {
+            stepSize: 2,
+            font: {
+              size: 11,
+              weight: '500'
+            },
+            color: '#718096',
+            callback: function(value) {
+              return value + 'h';
+            }
+          },
+          grid: {
+            color: 'rgba(226, 232, 240, 0.8)',
+            drawBorder: false
+          }
+        },
+        x: {
+          ticks: {
+            font: {
+              size: 11,
+              weight: '500'
+            },
+            color: '#718096',
+            maxRotation: 45,
+            minRotation: 0
+          },
+          grid: {
+            display: false
+          }
+        }
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      }
+    }
+  });
+
+  // Stress distribution - Enhanced
+  const ctxStress = document.getElementById('stressChart').getContext('2d');
+  const stressLabels = Object.keys(stressCounts);
+  const stressData = Object.values(stressCounts);
+  const stressTotal = stressData.reduce((a, b) => a + b, 0);
+  
+  new Chart(ctxStress, {
+    type: 'doughnut',
+    data: { 
+      labels: stressLabels.length > 0 ? stressLabels.map(label => label.charAt(0).toUpperCase() + label.slice(1)) : ['No data'], 
+      datasets: [{ 
+        data: stressData.length > 0 ? stressData : [1], 
+        backgroundColor: [
+          'rgba(239, 68, 68, 0.9)',   // red for high
+          'rgba(245, 158, 11, 0.9)',  // orange for medium
+          'rgba(16, 185, 129, 0.9)'   // green for low
+        ],
+        borderColor: '#ffffff',
+        borderWidth: 3,
+        hoverBorderWidth: 4,
+        hoverOffset: 8
+      }] 
+    },
+    options: { 
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '65%',
+      plugins: {
+        legend: { 
+          position: 'bottom',
+          labels: {
+            padding: 15,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            font: {
+              size: 12,
+              weight: '600',
+              family: "'Segoe UI', Roboto, sans-serif"
+            },
+            color: '#4a5568',
+            generateLabels: function(chart) {
+              const data = chart.data;
+              if (data.labels.length && data.datasets.length) {
+                return data.labels.map((label, i) => {
+                  const value = data.datasets[0].data[i];
+                  const percentage = stressTotal > 0 ? ((value / stressTotal) * 100).toFixed(0) : 0;
+                  return {
+                    text: label + ' (' + percentage + '%)',
+                    fillStyle: data.datasets[0].backgroundColor[i],
+                    hidden: false,
+                    index: i
+                  };
+                });
+              }
+              return [];
+            }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          titleFont: {
+            size: 14,
+            weight: '600'
+          },
+          bodyFont: {
+            size: 13
+          },
+          borderColor: '#ffffff',
+          borderWidth: 1,
+          cornerRadius: 8,
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.parsed || 0;
+              const percentage = stressTotal > 0 ? ((value / stressTotal) * 100).toFixed(1) : 0;
+              return label + ': ' + value + ' (' + percentage + '%)';
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Energy distribution - Enhanced
+  const ctxEnergy = document.getElementById('energyChart').getContext('2d');
+  const energyLabels = Object.keys(energyCounts);
+  const energyData = Object.values(energyCounts);
+  const energyTotal = energyData.reduce((a, b) => a + b, 0);
+  
+  new Chart(ctxEnergy, {
+    type: 'doughnut',
+    data: { 
+      labels: energyLabels.length > 0 ? energyLabels.map(label => label.charAt(0).toUpperCase() + label.slice(1)) : ['No data'], 
+      datasets: [{ 
+        data: energyData.length > 0 ? energyData : [1], 
+        backgroundColor: [
+          'rgba(139, 92, 246, 0.9)',  // purple for low
+          'rgba(59, 130, 246, 0.9)',  // blue for medium
+          'rgba(251, 191, 36, 0.9)'   // yellow for high
+        ],
+        borderColor: '#ffffff',
+        borderWidth: 3,
+        hoverBorderWidth: 4,
+        hoverOffset: 8
+      }] 
+    },
+    options: { 
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '65%',
+      plugins: {
+        legend: { 
+          position: 'bottom',
+          labels: {
+            padding: 15,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            font: {
+              size: 12,
+              weight: '600',
+              family: "'Segoe UI', Roboto, sans-serif"
+            },
+            color: '#4a5568',
+            generateLabels: function(chart) {
+              const data = chart.data;
+              if (data.labels.length && data.datasets.length) {
+                return data.labels.map((label, i) => {
+                  const value = data.datasets[0].data[i];
+                  const percentage = energyTotal > 0 ? ((value / energyTotal) * 100).toFixed(0) : 0;
+                  return {
+                    text: label + ' (' + percentage + '%)',
+                    fillStyle: data.datasets[0].backgroundColor[i],
+                    hidden: false,
+                    index: i
+                  };
+                });
+              }
+              return [];
+            }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          titleFont: {
+            size: 14,
+            weight: '600'
+          },
+          bodyFont: {
+            size: 13
+          },
+          borderColor: '#ffffff',
+          borderWidth: 1,
+          cornerRadius: 8,
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.parsed || 0;
+              const percentage = energyTotal > 0 ? ((value / energyTotal) * 100).toFixed(1) : 0;
+              return label + ': ' + value + ' (' + percentage + '%)';
+            }
+          }
+        }
+      }
+    }
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "layouts/pipeline_layout.html" %}
+{% block content %}
+
+<section class="cards">
+  <div class="card">Sleep: 5.0h</div>
+  <div class="card">Energy: Medium</div>
+  <div class="card">Stress: Low</div>
+  <div class="card">Adherence: 66%</div>
+</section>
+
+<section class="agent">
+  <h3>Agent Decision Trace</h3>
+  <ul>
+    {% for r in reasoning %}
+      <li>{{ r }}</li>
+    {% endfor %}
+  </ul>
+</section>
+
+{% endblock %}
