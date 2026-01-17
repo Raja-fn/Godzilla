@@ -914,43 +914,59 @@
   <div class="container-fluid">
     <div class="row g-4">
       <div class="col-lg-12">
-        <div class="card p-4">
+        <div class="card p-4 border-0 shadow-sm"
+          style="border-radius: 30px; background: linear-gradient(145deg, #ffffff, #f8fafc);">
           <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="fw-bold mb-0"><i class="fas fa-users text-primary me-2"></i> Community Activity</h5>
-            <div class="badge bg-soft-primary text-primary px-3 py-2" style="border-radius: 20px;">
-              <i class="fas fa-globe-americas me-1"></i> Global Goal: 1M Steps Today
+            <div>
+              <h5 class="fw-bold mb-1"><i class="fas fa-users text-primary me-2"></i> Community Pulse</h5>
+              <p class="text-muted extra-small mb-0">Live activity from the Alivea community</p>
+            </div>
+            <div class="badge bg-soft-success text-success px-3 py-2" style="border-radius: 20px;">
+              <i class="fas fa-bullseye me-1"></i> Global Goal: 1M Steps Today (82% reached)
             </div>
           </div>
 
-          <div class="row g-4">
+          <div class="row g-3">
             <div class="col-md-4">
-              <div class="social-item d-flex align-items-center p-3 border" style="border-radius: 20px;">
-                <div class="avatar me-3 bg-pastel-lavender p-2 rounded-circle">👩‍🚀</div>
-                <div>
-                  <div class="fw-bold small">Alex J.</div>
-                  <div class="text-muted extra-small">Just finished a 5km run! 🏃‍♂️</div>
+              <div class="social-item d-flex align-items-center p-3 border transition-hover"
+                style="border-radius: 24px; border-color: rgba(0,0,0,0.05) !important;">
+                <div class="avatar me-3 bg-pastel-lavender p-1 rounded-circle border"
+                  style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                  👩‍🚀</div>
+                <div class="flex-grow-1">
+                  <div class="fw-bold extra-small">Alex J.</div>
+                  <div class="text-muted" style="font-size: 0.65rem;">Just finished a 5km run! 🏃‍♂️</div>
                 </div>
-                <button class="btn btn-sm btn-link ms-auto text-decoration-none">👏</button>
+                <button class="btn btn-sm btn-soft-primary rounded-circle p-0" style="width: 32px; height: 32px;"
+                  onclick="toast('Alex received your clap! 👏')">👏</button>
               </div>
             </div>
             <div class="col-md-4">
-              <div class="social-item d-flex align-items-center p-3 border" style="border-radius: 20px;">
-                <div class="avatar me-3 bg-pastel-mint p-2 rounded-circle">🧘</div>
-                <div>
-                  <div class="fw-bold small">Sarah K.</div>
-                  <div class="text-muted extra-small">Completed 7-day Zen streak! 🧘‍♀️</div>
+              <div class="social-item d-flex align-items-center p-3 border transition-hover"
+                style="border-radius: 24px; border-color: rgba(0,0,0,0.05) !important;">
+                <div class="avatar me-3 bg-pastel-mint p-1 rounded-circle border"
+                  style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                  🧘</div>
+                <div class="flex-grow-1">
+                  <div class="fw-bold extra-small">Sarah K.</div>
+                  <div class="text-muted" style="font-size: 0.65rem;">Completed 7-day Zen streak! 🧘‍♀️</div>
                 </div>
-                <button class="btn btn-sm btn-link ms-auto text-decoration-none">🔥</button>
+                <button class="btn btn-sm btn-soft-primary rounded-circle p-0" style="width: 32px; height: 32px;"
+                  onclick="toast('Sarah is feeling the fire! 🔥')">🔥</button>
               </div>
             </div>
             <div class="col-md-4">
-              <div class="social-item d-flex align-items-center p-3 border" style="border-radius: 20px;">
-                <div class="avatar me-3 bg-pastel-peach p-2 rounded-circle">🚴</div>
-                <div>
-                  <div class="fw-bold small">Mike R.</div>
-                  <div class="text-muted extra-small">Crushed a HIIT session. ⚡</div>
+              <div class="social-item d-flex align-items-center p-3 border transition-hover"
+                style="border-radius: 24px; border-color: rgba(0,0,0,0.05) !important;">
+                <div class="avatar me-3 bg-pastel-peach p-1 rounded-circle border"
+                  style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                  🚴</div>
+                <div class="flex-grow-1">
+                  <div class="fw-bold extra-small">Mike R.</div>
+                  <div class="text-muted" style="font-size: 0.65rem;">Crushed a HIIT session. ⚡</div>
                 </div>
-                <button class="btn btn-sm btn-link ms-auto text-decoration-none">💪</button>
+                <button class="btn btn-sm btn-soft-primary rounded-circle p-0" style="width: 32px; height: 32px;"
+                  onclick="toast('Mike got your support! 💪')">💪</button>
               </div>
             </div>
           </div>
